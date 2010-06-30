@@ -43,7 +43,7 @@ Description:
         ----------------
         From the command line  
         
-        ./cawind firefox http://www.whereStartTutorial.com
+        cawind firefox http://www.whereStartTutorial.com
         
         
         Create tutorial:

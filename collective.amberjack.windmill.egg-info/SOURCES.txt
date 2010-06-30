@@ -415,5 +415,6 @@ collective/amberjack/windmill/html/js/wm/ide/ui.js
 collective/amberjack/windmill/html/jstest/data.json
 collective/amberjack/windmill/html/jstest/form.html
 collective/amberjack/windmill/html/jstest/main.html
+dist/collective.amberjack.windmill-0.1-py2.6.egg
 docs/AUTHORS.txt
 docs/HISTORY.txt
