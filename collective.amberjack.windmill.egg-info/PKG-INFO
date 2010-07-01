@@ -32,12 +32,16 @@ Description:
         1. Using the shell go into the path where you want to place collective.amberjack.windmill and type::
         
         	svn co http://svn.plone.org/svn/collective/collective.amberjack.windmill/trunk/ collective.amberjack.windmill
+        
+        2. go into the new folder "collective.amberjack.windmill" typing:: 
+        
+        	cd collective.amberjack.windmill
          
-        2. now you can install it::
+        3. now you can install it::
         
-        	python ./collective.amberjack.windmill/setup.py install
+        	sudo python ./setup.py install
         
-        3. Make sure that the browser allows pop-up windows and then run cawind with::
+        4. Make sure that the browser allows pop-up windows and then run cawind with::
         	
         	cawind firefox http://www.plone.org
         

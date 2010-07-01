@@ -11,7 +11,7 @@ def main():
             admin_options.help()
         sys.exit()
 
-    # MONEKY PATCHING
+    # MONKEY PATCHING
     # PATH SUBSTITUTION
     from windmill.conf import global_settings
     global_settings.WINDMILL_PATH = os.path.dirname(__file__)
