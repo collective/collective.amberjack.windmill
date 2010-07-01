@@ -17,7 +17,7 @@ Installation
 **Requirements:** 
 
 	       - python 2.5 or 2.6 (http://www.python.org)
-	       - an svn client
+	       - an Subversion client
 
 **Installation steps:** 
 
@@ -36,6 +36,8 @@ Installation
    If you see the cawind IDE you're ready to create your first tutorial.
 
 **Launching cawind with firefox using your own profile:**
+
+You must have run cawind IDE at least one time.
 	
 1. First you need to create a folder for your firefox-windmill profile and put into it a copy of the your current firefox profile ``prefs.js`` 
   
