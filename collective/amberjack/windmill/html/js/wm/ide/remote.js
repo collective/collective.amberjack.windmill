@@ -422,6 +422,28 @@ windmill.ui.remote = new function() {
         	  
           
            }
+          /* else if(metodo=='open'){
+         	  if(parametri['url']){
+        		  if((parametri['url']+'')=='' || ((parametri['url']+'').replace(re,''))==''){ 
+        			  strIn='This microstep is incomplete. Edit it!';
+      	  			  $(id+'inst').style.color='red';
+      	  		  }else{
+                   strIn='Go to the url --> ' + parametri['url'];
+                   $(id+'inst').style.color='#666';
+      	  		  }
+        	   }else{
+        		  if($(id+'option')){
+        			  if($(id+'option').value=='' || ($(id+'option').value.replace(re,''))==''){ 
+          	  			strIn='This microstep is incomplete. Edit it!';
+          	  			$(id+'inst').style.color='red';
+          	  		  }
+                  	  else{
+                  		  strIn='Go to the url --> ' + $(id+'option').value;
+                  		  $(id+'inst').style.color='#666';
+                  	  }
+        		   }
+        	    }
+           }*/
            else if(metodo=='waits.sleep'){
         	  if(parametri['milliseconds']){
         		  if((parametri['milliseconds']+'')=='' || ((parametri['milliseconds']+'').replace(re,''))==''){ 
@@ -603,6 +625,19 @@ windmill.ui.remote = new function() {
         
         //safari hack for resizing the suite div to accomodate the new action
         $(id).style.height = '';
+        
+     /* var nextMicro = $(id).nextSibling;
+        var nextMethod = null;
+        if (nextMicro){
+          nextMethod = $(nextMicro.id+"method").value;
+        } */
+        
+        
+      //if the method selected is "open" add a microstep with method "waits.forPageLoad" below the current one (if there isn't one yet)
+       /* if (method == "open" && nextMethod != "waits.forPageLoad") 
+          		this.addActionBelow(id,this.buildAction("waits.forPageLoad", {timeout:8000}));*/
+
+        
         
        if($(id+'method').style.visibility=='hidden')
     	   this.toggleSimAdv(id);
@@ -915,7 +950,7 @@ windmill.ui.remote = new function() {
     };
     
     
-    
+    //used during drag&drop for hide the tinymce editors of the IDE
     this.editorInIDE={};
 
     //Send the step to save to the backend and receive an url for the user to save

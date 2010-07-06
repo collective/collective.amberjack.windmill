@@ -75,6 +75,7 @@ windmill.ui.recorder = new function() {
                   if (element == e.target){
                 	  locator = 'link';
                 	  locValue = removeHTMLTags(e.target.innerHTML);
+                	  locValue=locValue.trim();
                   }
               }
               if (locator == ''){

@@ -18,7 +18,7 @@ Copyright 2006-2007, Open Source Applications Foundation
 windmill.ui.domexplorer = new function() {
   var exploreState = false;
   
-  //controlla se click e' effettuato su editor tiny
+  //check if click is on a tiny editor
   this.isEditor=false;
   
   this.setExploreState = function() {
@@ -77,7 +77,7 @@ windmill.ui.domexplorer = new function() {
           //Validation
           var element = elementslib.Element.LINK(removeHTMLTags(e.target.innerHTML));
           if (element == e.target){
-            $("domExp").innerHTML = "Link: " + removeHTMLTags(e.target.innerHTML);
+            $("domExp").innerHTML = "Link: " + removeHTMLTags(e.target.innerHTML).trim();
           }
         }
         else if ((e.target.value != "") && (typeof(e.target.value) != "undefined")) {
@@ -132,6 +132,7 @@ windmill.ui.domexplorer = new function() {
       this.explorerUpdate(e);
   };
   
+  //for not lose the previous selected locators in highlight method
   this.prevHighValue=null;
 
   this.explorerUpdate = function(e) {
@@ -252,6 +253,7 @@ windmill.ui.domexplorer = new function() {
       $('explorer').src = 'img/xoff.png';
       $('domExp').style.display = 'block';
       $('domExp').innerHTML = '';
+      
       if(windmill.ui.recorder.same==false)
     	  windmill.ui.recorder.getTinyEditor();
  
