@@ -22,6 +22,23 @@ windmill.controller.what = function() {
   
 windmill.controller.click = function(paramObject){        
   var element = lookupNode(paramObject);
+  
+  //check if i clicked on a multiple selection option
+  if(paramObject.value){
+  	var parent=jQuery(element).parent().get(0);
+  	if(parent.tagName.toLowerCase()=='select')
+  		if(jQuery(element).parent().attr("multiple")){
+  				if(jQuery(element).attr("selected")==true)
+  					jQuery(element).removeAttr("selected");
+  				else
+  					jQuery(element).attr("selected","selected");
+  				
+  				return;
+  		}
+  		
+  }
+  
+  
   windmill.events.triggerEvent(element, 'focus', false);
 
   // And since the DOM order that these actually happen is as follows when a user clicks, we replicate.

@@ -25,20 +25,19 @@ windmill.controller.click = function(paramObject){
     var element = lookupNode(paramObject);
     
    //check if i clicked on a multiple selection option
-   /* if(paramObject.value){
-    	alert(jQuery(element).parent())
-    	if(jQuery(element).parent().tagName.toLowerCase()=='select')
+    if(paramObject.value){
+    	var parent=jQuery(element).parent().get(0);
+    	if(parent.tagName.toLowerCase()=='select')
     		if(jQuery(element).parent().attr("multiple")){
-    				alert("qui")
-    				if(jQuery(element).attr("selected")!=undefined)
-    					JQuery(element).removeAttr("selected");
+    				if(jQuery(element).attr("selected")==true)
+    					jQuery(element).removeAttr("selected");
     				else
-    					jQuery(element).parent().attr("selected","selected");
+    					jQuery(element).attr("selected","selected");
     				
     				return;
     		}
     		
-    }*/
+    }
     
     
     
