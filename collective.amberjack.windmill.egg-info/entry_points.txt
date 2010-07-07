@@ -1,3 +1,0 @@
-[console_scripts]
-cawind = collective.amberjack.windmill.main:main
-
