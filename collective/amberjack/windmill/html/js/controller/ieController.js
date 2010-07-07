@@ -109,7 +109,8 @@ windmill.controller.doubleClick = function(paramObject){
  
  windmill.controller.editorSelect = function (paramObject){
 	 windmill.testWin().tinyMCE.get(paramObject.id).selection.moveToBookmark( eval("(" + paramObject.bookmark + ")"));
-	 windmill.controller.click(windmill.testWin().tinyMCE.get(paramObject.id).selection.getNode().parentNode)
+	//solution for show the tiny buttons that appear only when onMouseUp  
+	 windmill.events.triggerMouseEvent(windmill.testWin().tinyMCE.get(paramObject.id).selection.getNode(), 'mouseup', true);
  };
  
  windmill.controller.highlight = function (paramObject){

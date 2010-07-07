@@ -557,6 +557,7 @@ windmill.ui.remote = new function() {
     this.clearIDE = function() {
         input_box = confirm("Are you sure you want to delete all the data in the IDE?");
         if (input_box == true) {
+        	$("titTut").value=''; //reset title's value
             fleegix.fx.fadeOut($('ideForm'));  //form IDE
             d = function() {
                 $('ideForm').innerHTML = '';
@@ -1186,6 +1187,7 @@ windmill.ui.remote = new function() {
                  tinyMCE.execCommand('mceRemoveControl', false, id);
                  }
         	fleegix.fx.fadeOut($('ideForm'));  //form IDE
+        	$("titTut").value=''; //reset title's value
         	d = function() {
                 $('ideForm').innerHTML = '';
                 fleegix.fx.fadeIn($('ideForm'));

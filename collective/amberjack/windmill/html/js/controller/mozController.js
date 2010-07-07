@@ -23,6 +23,25 @@ windmill.controller.what = function() {
 //Click function for Mozilla with Chrome
 windmill.controller.click = function(paramObject){
     var element = lookupNode(paramObject);
+    
+   //check if i clicked on a multiple selection option
+   /* if(paramObject.value){
+    	alert(jQuery(element).parent())
+    	if(jQuery(element).parent().tagName.toLowerCase()=='select')
+    		if(jQuery(element).parent().attr("multiple")){
+    				alert("qui")
+    				if(jQuery(element).attr("selected")!=undefined)
+    					JQuery(element).removeAttr("selected");
+    				else
+    					jQuery(element).parent().attr("selected","selected");
+    				
+    				return;
+    		}
+    		
+    }*/
+    
+    
+    
     windmill.events.triggerEvent(element, 'focus', false);
 
     // Add an event listener that detects if the default action has been prevented.
@@ -65,9 +84,9 @@ windmill.controller.click = function(paramObject){
               var itrElement = element;
               while (itrElement != null) {
                 if ((itrElement.href) && (itrElement.href != "#")) {
-                  getParentWindow(itrElement).location = itrElement.href;
-                  //windmill.controller.open({"url": itrElement.href, 'reset':false});
-                  break;
+                	getParentWindow(itrElement).location = itrElement.href;
+                	//windmill.controller.open({"url": itrElement.href, 'reset':false});
+                	break;
                 }
                 itrElement = itrElement.parentNode;
               }
@@ -145,7 +164,8 @@ windmill.controller.doubleClick = function(paramObject) {
  
  windmill.controller.editorSelect = function (paramObject){
 	 windmill.testWin().tinyMCE.get(paramObject.id).selection.moveToBookmark( eval("(" + paramObject.bookmark + ")"));
-	 windmill.controller.click(windmill.testWin().tinyMCE.get(paramObject.id).selection.getNode().parentNode)
+	//solution for show the tiny buttons that appear only when onMouseUp  
+	 windmill.events.triggerMouseEvent(windmill.testWin().tinyMCE.get(paramObject.id).selection.getNode(), 'mouseup', true);
  };
  
  windmill.controller.highlight = function (paramObject){

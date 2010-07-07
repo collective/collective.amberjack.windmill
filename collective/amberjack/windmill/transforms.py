@@ -38,7 +38,10 @@ class OrderedConfigParser(ConfigParser.RawConfigParser):
             stri+="[%s]\n" % section
             for (key, value) in self._sections[section].items(): 
                 if key != "__name__":
-                    stri+="%s = %s\n" % (key, str(value).replace('\n', '\n\t'))
+                    if key!='steps' and key!='microsteps':     #insert editor formatting on the same line
+                        stri+="%s = %s\n" % (key, str(value).replace('\n', ''))
+                    else:
+                        stri+="%s = %s\n" % (key, str(value).replace('\n', '\n\t'))
             stri+="\n"
         return stri
 
@@ -164,14 +167,13 @@ class Converter:
                             if(k=='bookmark'):
                                 text+="'"+k+"' : '"+v+'\''
                             else:    
-                                text+="'"+k+"' : "+'"'+v+'"'
+                                text+="'"+k+"' : "+'"'+v.replace('"','\\"')+'"'
                             primo=False
                  else:
                       if(k=='bookmark'):
                                 text+=", '"+k+"' : '"+v+'\''
                       else: 
-                          text+=", '"+k+"' : "+'"'+v+'"'
-  
+                          text+=", '"+k+"' : "+'"'+v.replace('"','\\"')+'"'
             
         selector+='}'
         text+='}'
