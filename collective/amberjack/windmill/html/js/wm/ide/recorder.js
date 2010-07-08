@@ -39,10 +39,12 @@ windmill.ui.recorder = new function() {
     }
     
     this.tiny_drop_down=false;  //check if i recorded a click inside tiny drop-down list
+    this.internal_link=false;  //check if i click on a link but i must not add a new step (used with Plone's tabs contained in the content "Edit tab")
     
     //write json to the remote from the click events
     this.writeJsonClicks = function(e) {
     	windmill.ui.recorder.tiny_drop_down=false;
+    	windmill.ui.recorder.internal_link=false;
         if (windmill.ui.recorder.recordState == false) { return; }
         var locator = '';
         var locValue = '';
@@ -73,9 +75,20 @@ windmill.ui.recorder = new function() {
               else if ((e.target.tagName.toUpperCase() == "A") || (e.target.parentNode.tagName.toUpperCase() == "A")) {
                   var element = elementslib.Element.LINK(removeHTMLTags(e.target.innerHTML));
                   if (element == e.target){
+                	  if(jQuery(e.target).attr('href').charAt(0)=='#') //internal_link
+                		  windmill.ui.recorder.internal_link=true;
                 	  locator = 'link';
                 	  locValue = removeHTMLTags(e.target.innerHTML);
                 	  locValue=locValue.trim();
+                  }
+                  else{  // get the right locator when a node (for example a span) is inside a link node which point to an internal_link
+                	  
+                	  	if(e.target.parentNode.tagName.toUpperCase() == "A" && jQuery(e.target.parentNode).attr('href').charAt(0)=='#'){ 
+                		  locator = 'link';
+                		  locValue = removeHTMLTags(e.target.parentNode.innerHTML);
+                		  locValue=locValue.trim();
+                		  windmill.ui.recorder.internal_link=true;
+                	  	}
                   }
               }
               if (locator == ''){
@@ -211,7 +224,7 @@ windmill.ui.recorder = new function() {
         				}
                     //Add the click action
         				windmill.ui.remote.addAction(windmill.ui.remote.buildAction('click', params));
-        				if(locator == 'link' && windmill.ui.recorder.tiny_drop_down==false){
+        				if(locator == 'link' && windmill.ui.recorder.tiny_drop_down==false && windmill.ui.recorder.internal_link==false){
         					this.same=false;
         					windmill.unloaded();
         					windmill.loaded();
@@ -220,7 +233,7 @@ windmill.ui.recorder = new function() {
                 //if the sensative click is off, you can click all over but we only pick up things we know are clickable
         			else if ((e.target.onclick != null) || (locator == 'link') || (e.target.tagName.toUpperCase() == 'IMG')) {
         				windmill.ui.remote.addAction(windmill.ui.remote.buildAction('click', params));
-        				if(locator == 'link'  && windmill.ui.recorder.tiny_drop_down==false){
+        				if(locator == 'link'  && windmill.ui.recorder.tiny_drop_down==false && windmill.ui.recorder.internal_link==false){
         					this.same=false;
         					windmill.unloaded();
         					windmill.loaded();

@@ -21,6 +21,9 @@ windmill.ui.domexplorer = new function() {
   //check if click is on a tiny editor
   this.isEditor=false;
   
+  ////check if i click on a link with href="#...." (used with Plone's tabs contained in the content "Edit tab")
+  this.internal_link=false; 
+  
   this.setExploreState = function() {
     if (this.exploreState == true) { this.domExplorerOn(); }
   }
@@ -32,6 +35,7 @@ windmill.ui.domexplorer = new function() {
   //Display the id in the remote
   this.setIdInRemote = function(e) {
 	  
+	windmill.ui.domexplorer.internal_link=false;   
     if ($(windmill.ui.remote.selectedElement) == null){
       windmill.ui.remote.selectedElement = null;
     }
@@ -74,11 +78,23 @@ windmill.ui.domexplorer = new function() {
           }
         }
         else if ((e.target.nodeName.toUpperCase() == "A") || (e.target.parentNode.nodeName.toUpperCase() == "A")) {
-          //Validation
           var element = elementslib.Element.LINK(removeHTMLTags(e.target.innerHTML));
           if (element == e.target){
-            $("domExp").innerHTML = "Link: " + removeHTMLTags(e.target.innerHTML).trim();
+        	  if(jQuery(e.target).attr('href').charAt(0)=='#'){ //internal_link
+        		  jQuery(e.target).bind('click',function(){windmill.ui.domexplorer.explorerClick(); jQuery(e.target).unbind('click') }) //For internal_link I use bind because dxRecursiveBind isn't able to add onclick handler to it 
+        		  windmill.ui.domexplorer.internal_link=true;  
+        	  }
+        	  $("domExp").innerHTML = "Link: " + removeHTMLTags(e.target.innerHTML).trim();
           }
+          else{  // get the right locator when a node (for example a span) is inside a link node which point to an internal_link
+        	  
+      	  	if(e.target.parentNode.tagName.toUpperCase() == "A" && jQuery(e.target.parentNode).attr('href').charAt(0)=='#'){
+      	  	jQuery(e.target).bind('click',function(){windmill.ui.domexplorer.explorerClick(); jQuery(e.target).unbind('click') }) //For internal_link I use bind because dxRecursiveBind isn't able to add onclick handler to it
+      	  		$("domExp").innerHTML = "Link: " + removeHTMLTags(e.target.parentNode.innerHTML).trim();
+      	  		windmill.ui.domexplorer.internal_link=true;  
+      	  	}
+          }
+          
         }
         else if ((e.target.value != "") && (typeof(e.target.value) != "undefined")) {
           var element = elementslib.Element.VALUE(e.target.value);
@@ -200,6 +216,19 @@ windmill.ui.domexplorer = new function() {
   }
   
   this.explorerClick = function(e) {
+	  
+	  //for internal link
+	  if(windmill.ui.domexplorer.internal_link==true){
+		  if ($("domExp").style.display == 'none'){
+	    	  windmill.ui.domexplorer.domExplorerOff();
+	      } else {
+	    	  windmill.ui.domexplorer.dxRecursiveUnBind(windmill.testWin());
+	      }
+	      window.focus();
+		  return;  
+	  }
+	  
+	  
     e.cancelBubble = true;
     if (windmill.browser.isIE == false) {
       e.stopPropagation();
