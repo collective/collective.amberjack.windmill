@@ -300,10 +300,13 @@ var windmill = new function() {
         		  windmill.ui.remote.getSuite(null, true);
         	  } 
         	  windmill.ui.recorder.same=false;
-        	  for(var i in windmill.ui.recorder.arrEdit){ //when new page is loaded, delete associations between editors in the IDE and editors in the page
-        		  windmill.ui.recorder.arrEdit[i]=undefined;
-        	  }
-          	}
+        	 
+           }
+          
+           for(var i in windmill.ui.recorder.arrEdit){ //when new page is loaded, delete associations between editors in the IDE and editors in the page
+    		  windmill.ui.recorder.arrEdit[i]=undefined;
+    	   }
+          
         } catch(err){}
         
         checkPage = function() {
@@ -407,6 +410,9 @@ var windmill = new function() {
         windmill.ui.recorder.setRecState();
         if(windmill.ui.currentSuite!=null && windmill.ui.recorder.recordState==true) //set the url of the new step if recording state is true
         	$(windmill.ui.currentSuite+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html",""); 
+        else if(windmill.ui.recorder.recordState==false)  //i moved in another page with recorder turned off
+        	  windmill.ui.recorder.primaPag=true;
+        
 		busyOff();
         // if we're currently running JS tests, we need to know the
         // test window reloaded so we can re-inject all the test code

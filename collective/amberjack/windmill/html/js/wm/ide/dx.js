@@ -283,9 +283,11 @@ windmill.ui.domexplorer = new function() {
       $('domExp').style.display = 'block';
       $('domExp').innerHTML = '';
       
-      if(windmill.ui.recorder.same==false)
+      if(windmill.ui.recorder.same==false || windmill.ui.recorder.primaPag==true){     //if i turn on the DOM Explorer in the current page before of the recorder i must load the tiny editors
     	  windmill.ui.recorder.getTinyEditor();
- 
+    	  if(windmill.ui.recorder.primaPag==true)
+     		 windmill.ui.recorder.primaPag=false;
+      }
       this.dxRecursiveBind(windmill.testWin());
     }
     catch(error) {

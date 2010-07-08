@@ -459,7 +459,7 @@ windmill.ui.recorder = new function() {
 
 };
 
- 	//check if i'm in the first page of the tutorial (it's true if i just started the IDE, false otherwise) 
+ 	//used for check if i'm in the first page of the tutorial or if i went in a page with the recorder turned off 
  	this.primaPag=true;
   
     //Recursively bind to all the iframes and frames within
