@@ -94,7 +94,7 @@ def load_tutorial(self,suite_name,filename):
             selector=None
             text=None
             if(noMic.has_key(str(j))):
-                filecfg+='\tclient.waits.sleep(nameStep=u\''+noMic[str(j)].split('_',1)[-1]+'\', url='+repr(urlStep[str(h)])+', descStep='+repr(descStep[str(h)])+', milliseconds=u\'0\', description=u\'\')\n'
+                filecfg+='\tclient.highlight(nameStep=u\''+noMic[str(j)].split('_',1)[-1]+'\', url='+repr(urlStep[str(h)])+', descStep='+repr(descStep[str(h)])+', locators=u\'\', description=u\'\')\n'
                 oldNamestep=noMic[str(j)].split('_',1)[-1]
                 h+=1
                 continue
@@ -105,7 +105,7 @@ def load_tutorial(self,suite_name,filename):
                 if(metodo!='click' and metodo!='waits.forPageLoad' and metodo!='waits.forElement' and  metodo!='waits.sleep' and  metodo!='select' and  metodo!='check' and metodo!='radio' and
                     metodo!='type' and  metodo!='highlight' and  metodo!='editor' and  metodo!='editorSelect'):
                         old_style=True   
-                        metodo='highlight';
+                        metodo='click';
                         
             except:
                 metodo="highlight"
@@ -140,7 +140,7 @@ def load_tutorial(self,suite_name,filename):
                         oldNamestep=stepNameMic[microstep[str(j)]].split('_',1)[-1]
                         h+=1
             if old_style==True :
-                    filecfg+=", locators=u\""+config.get(microstep[str(j)], "method")+"\""
+                    filecfg+=", id=u\""+config.get(microstep[str(j)], "method")+"\""
            
             description=''            
             try:

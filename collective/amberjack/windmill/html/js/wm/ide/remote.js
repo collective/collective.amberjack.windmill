@@ -877,6 +877,16 @@ windmill.ui.remote = new function() {
             $('ideForm').appendChild(suite);
             if(load==false) //if you are loading a tutorial loads the step's url
             	$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","");
+            	
+            var catchEnter = function(e){
+            		if (e.keyCode == 13){
+            			var index = e.target.id.lastIndexOf("Url"); 
+            			var idSuite=e.target.id.substring(0,index); //get suite id
+            			windmill.ui.playback.sendPlayBack(idSuite+'Url',idSuite);
+                    }
+                };
+                
+            fleegix.event.listen($(suite.id+'Url'), 'onkeypress', catchEnter); //go to the step url if i press enter in its url field
             
             //add editor for step's description
             tinyMCE.execCommand('mceAddControl', false, suiteName+'descStep');
@@ -1019,7 +1029,7 @@ windmill.ui.remote = new function() {
                     if(j==1){
   							paramsObj['url']=$(suite.id+'Url').value;
   							paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
-  							paramsObj['titleTut']=$("titTut").value;
+  							paramsObj['titleTut']=id;
   					}
                     paramsObj['nameStep']=id;
                     paramsObj['description'] = $(suite.childNodes[j].id + 'DescId').value;
@@ -1139,7 +1149,10 @@ windmill.ui.remote = new function() {
         							  if(k==1){
         								  paramsObj['url']=$(suite.id+'Url').value;
         								  paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
-        								  paramsObj['titleTut']=$("titTut").value;
+        								  if($("titTut").value.trim()=='' && lang=='amberjack')  //amberjack tutorial must have a title
+        									  paramsObj['titleTut']="Tutorial";
+        								  else
+        									  paramsObj['titleTut']=$("titTut").value.trim();
         							  }
         							  paramsObj['nameStep']=name;
         							  paramsObj['description'] = $(suite.childNodes[k].id + 'DescId').value;
@@ -1159,7 +1172,10 @@ windmill.ui.remote = new function() {
             var jsonObject = new jsonCall('1.1', 'create_save_file');  
             var params_obj = {};
             params_obj.transformer = lang;
-            params_obj.suite_name = windmill.ui.tutName;
+            if($("titTut").value.trim()!='')
+            	params_obj.suite_name = $("titTut").value.trim();    //for save file using its title
+            else
+            	params_obj.suite_name = "Tutorial";
             params_obj.tests = testArray;
             jsonObject.params = params_obj;
             var jsonString = JSON.stringify(jsonObject); //convert jsonObject in JSON text
@@ -1196,7 +1212,7 @@ windmill.ui.remote = new function() {
             windmill.ui.currentSuite=null;
             var jsonObject = new jsonCall('1.1', 'load_tutorial');  
             var params_obj = {};
-            params_obj.suite_name = windmill.ui.tutName;
+            params_obj.suite_name = "Tutorial";
             params_obj.filename = filename;
             jsonObject.params = params_obj;
             

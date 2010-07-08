@@ -40,8 +40,6 @@ windmill.ui = new function() {
     this.recordSuiteNum = 0;
     this.currentSuite = null;
     
-    this.tutName='Tutorial'; //default tutorial name
-    
     //Setter, incremeneting the recordSuiteNum
     this.incRecSuite = function() {
         this.recordSuiteNum++;

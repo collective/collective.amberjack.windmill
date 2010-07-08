@@ -287,28 +287,27 @@ windmill.xhr = new function() {
 
     this.createActionFromSuite = function(suiteName, actionObj) {
         //If the suite name is null, set it to default
-        if (suiteName == null) {
+       /* if (suiteName == null) {
             suiteName = 'Default';
-            windmill.ui.tutName='Tutorial';
-        }
-        else windmill.ui.tutName=suiteName;
+        }*/
+        
         var p=false;
         if(this.primo==true){
-        windmill.ui.recordSuiteNum--; 
-        this.primo=false;
-        p=true;
+        	windmill.ui.recordSuiteNum--; 
+        	this.primo=false;
+        	p=true;
         }
-        //windmill.ui.currentSuite = suiteName;
+        
         suite = windmill.ui.remote.getSuite(actionObj.params['nameStep'],true,true);
         if(actionObj.params['descStep']){
         	 h=function(){if(tinyMCE.getInstanceById(suite.id+"descStep")){
             tinyMCE.get(suite.id+"descStep").setContent(actionObj.params['descStep']); }
         	 }
         if(p==true){
-        setTimeout("h()",150)
+        	setTimeout("h()",150)
         }
         else
-        setTimeout("h()",0)
+        	setTimeout("h()",0)
         }
         if(actionObj.params['titleTut'])
         	$("titTut").value=actionObj.params['titleTut'];
