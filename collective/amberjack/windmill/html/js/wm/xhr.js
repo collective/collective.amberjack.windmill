@@ -279,11 +279,14 @@ windmill.xhr = new function() {
 
     };
     
-    //used for tinyMCE
+    
+    //variables used for prevent temporization problem due to the waiting for tiny editors loading
     this.tempActId=null;
     this.tempHtml=null;
     this.tempMethod=null;
-    this.primo=true;
+    
+    
+    this.primo=true; //true if i'm loading the first tutorial's microstep
 
     this.createActionFromSuite = function(suiteName, actionObj) {
         //If the suite name is null, set it to default
@@ -291,23 +294,21 @@ windmill.xhr = new function() {
             suiteName = 'Default';
         }*/
         
-        var p=false;
         if(this.primo==true){
         	windmill.ui.recordSuiteNum--; 
         	this.primo=false;
-        	p=true;
         }
         
         suite = windmill.ui.remote.getSuite(actionObj.params['nameStep'],true,true);
         if(actionObj.params['descStep']){
-        	 h=function(){if(tinyMCE.getInstanceById(suite.id+"descStep")){
-            tinyMCE.get(suite.id+"descStep").setContent(actionObj.params['descStep']); }
+        	h=function(sId,content){ 
+        		if(tinyMCE.getInstanceById(sId+"descStep")){
+        		tinyMCE.get(sId+"descStep").setContent(content); 
+        		}
         	 }
-        if(p==true){
-        	setTimeout("h()",150)
-        }
-        else
-        	setTimeout("h()",0)
+        	 
+        	var params= '\''+suite.id+'\',\''+actionObj.params['descStep']+'\'';
+        	setTimeout("h("+params+")",150);  //delay for allow tiny editor loading
         }
         if(actionObj.params['titleTut'])
         	$("titTut").value=actionObj.params['titleTut'];
