@@ -301,13 +301,14 @@ windmill.xhr = new function() {
         
         suite = windmill.ui.remote.getSuite(actionObj.params['nameStep'],true,true);
         if(actionObj.params['descStep']){
+        	
         	h=function(sId,content){ 
         		if(tinyMCE.getInstanceById(sId+"descStep")){
         		tinyMCE.get(sId+"descStep").setContent(content); 
         		}
         	 }
-        	 
-        	var params= '\''+suite.id+'\',\''+actionObj.params['descStep']+'\'';
+        	
+        	var params= '\''+suite.id+'\',\''+(actionObj.params['descStep'].replace(/'/g, "\\'"))+'\'';
         	setTimeout("h("+params+")",150);  //delay for allow tiny editor loading
         }
         if(actionObj.params['titleTut'])

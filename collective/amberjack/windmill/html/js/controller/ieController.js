@@ -130,7 +130,34 @@ windmill.controller.doubleClick = function(paramObject){
  };
  
  windmill.controller.highlight = function (paramObject){
-	 windmill.testWin().jQuery("*").removeClass('ajHighlight'); // when we play the method 'highlight' remove the previous highlighting
+		
+	 if (!windmill.testWin().jQuery){ //if page not contains jquery lib then add it
+		var headID = windmill.testWin().document.getElementsByTagName("head")[0];
+		var newScript = windmill.testWin().document.createElement('script');
+		newScript.type = 'text/javascript';
+		newScript.src ='/windmill-serv/js/lib/jquery/jquery-1.3.2.min.js';
+	    headID.appendChild(newScript);
+	 }
+	 
+	 if(windmill.testWin().jQuery('head')){
+	
+		 var children=windmill.testWin().jQuery('head').children();
+		 var found=false;
+		 var i;
+		 for(i=0;i<children.size();i++) 
+			 if (children[i].tagName.toLowerCase()=='script')
+				 if(children[i].href=='/windmill-serv/css/amberjack-utility.css'){ //check if the page contain the amberjack-utility.css
+					 found=true;
+					 break;
+				 }
+		
+		 if(found==false) //add the amberjack-utility.css if there isn't yet
+					 windmill.testWin().jQuery('head').append('<link rel="stylesheet" href="/windmill-serv/css/amberjack-utility.css" type="text/css" />'); //make available css for class 'ajHighlight'
+	
+	 }
+	 
+	 // when we play the method 'highlight' remove the previous highlighting
+	 windmill.testWin().jQuery("*").removeClass('ajHighlight'); 
 	 if (paramObject.locators.trim()!=''){
 		 var allLoc=(paramObject.locators).split(',');
 		 var lung=allLoc.length;
@@ -148,9 +175,9 @@ windmill.controller.doubleClick = function(paramObject){
 			 }
 		 }     
 		 var locators=eval('({'+selector+'})')
-		 for(var loc in locators){ 
+		 for(var loc in locators){
 			 paramObject[locators[loc]]=loc
-			 var element = lookupNode(paramObject);	
+			 var element = lookupNode(paramObject);
 			 jQuery(element).addClass('ajHighlight');
 			 paramObject[locators[loc]]=undefined;
 		 }

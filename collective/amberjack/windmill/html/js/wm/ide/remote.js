@@ -1172,10 +1172,10 @@ windmill.ui.remote = new function() {
             var jsonObject = new jsonCall('1.1', 'create_save_file');  
             var params_obj = {};
             params_obj.transformer = lang;
-            if($("titTut").value.trim()!='')
-            	params_obj.suite_name = $("titTut").value.trim();    //for save file using its title
+            if($("titTut").value.trim()!='' && lang=="amberjack")
+            	params_obj.suite_name = $("titTut").value.trim();    //for save file using its title (only if saving format is amberjack)
             else
-            	params_obj.suite_name = "Tutorial";
+            	params_obj.suite_name = "Tutorial";   //default tutorial name if saving format is javascript or python for forbid error in the names of js functions or py classes.
             params_obj.tests = testArray;
             jsonObject.params = params_obj;
             var jsonString = JSON.stringify(jsonObject); //convert jsonObject in JSON text
