@@ -1,0 +1,8 @@
+
+/*class used in 'highlight' method for highlight DOM elements*/
+
+.ajHighlight {
+    background-color: yellow !important;
+	color: black !important;
+	font-weight: bold !important;
+}

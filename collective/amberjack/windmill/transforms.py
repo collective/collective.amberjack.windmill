@@ -146,7 +146,7 @@ class Converter:
             if(k=='description'):
                 self.set(microstep_name,'description',v)  
                 continue
-            if(k=='locators'):
+            if(k=='locators'):  #highlight method
                if (v==''):
                         continue
                allLoc=v.split(',')
@@ -154,7 +154,7 @@ class Converter:
                cont=1
                for l in allLoc:
                    loctype=(l.split(':')[0]+'').strip()
-                   selector+='"'+(l.split(':')[1]).strip()+'" : '+"'"+loctype+"'"
+                   selector+='"'+(l.split(':',1)[1]).strip()+'" : '+"'"+loctype+"'"
                    if cont==lung:
                        break
                    else:

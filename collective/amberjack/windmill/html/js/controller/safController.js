@@ -34,16 +34,20 @@ windmill.controller.radio = function(paramObject){
 windmill.controller.click = function(paramObject){
   var element = lookupNode(paramObject);
   
+  if(windmill.testWin().jQuery(element).attr('class')=='context'){ //used for click on particular plone button(for example "Preview" button in tinymce popup when you want to add external link)
+  		windmill.testWin().jQuery(element).click();	
+		return;
+	}
   
-  //check if i clicked on a multiple selection option
+ //check if i clicked on a multiple selection option
   if(paramObject.value){
-  	var parent=jQuery(element).parent().get(0);
+  	var parent=windmill.testWin().jQuery(element).parent().get(0);
   	if(parent.tagName.toLowerCase()=='select')
-  		if(jQuery(element).parent().attr("multiple")){
-  				if(jQuery(element).attr("selected")==true)
-  					jQuery(element).removeAttr("selected");
+  		if(windmill.testWin().jQuery(element).parent().attr("multiple")){
+  				if(windmill.testWin().jQuery(element).attr("selected")==true)
+  					windmill.testWin().jQuery(element).removeAttr("selected");
   				else
-  					jQuery(element).attr("selected","selected");
+  					windmill.testWin().jQuery(element).attr("selected","selected");
   				
   				return;
   		}
@@ -137,14 +141,6 @@ windmill.controller.editorSelect = function (paramObject){
 
 
 windmill.controller.highlight = function (paramObject){
-	
-	 if (!windmill.testWin().jQuery){ //if page not contains jquery lib then add it
-		var headID = windmill.testWin().document.getElementsByTagName("head")[0];
-		var newScript = windmill.testWin().document.createElement('script');
-		newScript.type = 'text/javascript';
-		newScript.src ='/windmill-serv/js/lib/jquery/jquery-1.3.2.min.js';
-	    headID.appendChild(newScript);
-	 }
 	 
 	 if(windmill.testWin().jQuery('head')){
 	
@@ -152,11 +148,12 @@ windmill.controller.highlight = function (paramObject){
 		 var found=false;
 		 var i;
 		 for(i=0;i<children.size();i++) 
-			 if (children[i].tagName.toLowerCase()=='script')
-				 if(children[i].href=='/windmill-serv/css/amberjack-utility.css'){ //check if the page contain the amberjack-utility.css
+			 if (children[i].tagName.toLowerCase()=='link'){
+				 if(windmill.testWin().jQuery(children[i]).attr('href')=='/windmill-serv/css/amberjack-utility.css'){ //check if the page contain the amberjack-utility.css
 					 found=true;
 					 break;
 				 }
+			 }
 		
 		 if(found==false) //add the amberjack-utility.css if there isn't yet
 					 windmill.testWin().jQuery('head').append('<link rel="stylesheet" href="/windmill-serv/css/amberjack-utility.css" type="text/css" />'); //make available css for class 'ajHighlight'
@@ -173,19 +170,19 @@ windmill.controller.highlight = function (paramObject){
 		 var loctype;
 		 for(l=0;l<lung;l++){
 			 loctype=(allLoc[l].split(':')[0]+'').trim();
-			 selector+='"'+(allLoc[l].split(':')[1]).trim()+'" : '+"'"+loctype+"'";
+			 selector+='"'+(allLoc[l].substring(allLoc[l].indexOf(':')+1)).trim()+'" : '+"'"+loctype+"'";
 			 if (cont==lung)
 				 break;
 			 else{
 				 selector+=', ';
 				 cont+=1;
 			 }
-		 }     
+		 }
 		 var locators=eval('({'+selector+'})')
 		 for(var loc in locators){
 			 paramObject[locators[loc]]=loc
 			 var element = lookupNode(paramObject);
-			 jQuery(element).addClass('ajHighlight');
+			 windmill.testWin().jQuery(element).addClass('ajHighlight');
 			 paramObject[locators[loc]]=undefined;
 		 }
 	 }

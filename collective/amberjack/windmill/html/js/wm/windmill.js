@@ -413,6 +413,15 @@ var windmill = new function() {
         else if(windmill.ui.recorder.recordState==false)  //i moved in another page with recorder turned off
         	  windmill.ui.recorder.primaPag=true;
         
+        
+   	 	if (!windmill.testWin().jQuery){ //if page not contains jquery lib then add it for use its functions
+   	 		var headID = windmill.testWin().document.getElementsByTagName("head")[0];
+   	 		var newScript = windmill.testWin().document.createElement('script');
+   	 		newScript.type = 'text/javascript';
+   	 		newScript.src ='/windmill-serv/js/lib/jquery/jquery-1.3.2.min.js';
+   	 		headID.appendChild(newScript);
+   	 	}
+        
 		busyOff();
         // if we're currently running JS tests, we need to know the
         // test window reloaded so we can re-inject all the test code

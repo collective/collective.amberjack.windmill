@@ -167,19 +167,25 @@ windmill.ui.domexplorer = new function() {
         //Incase if that node has been removed somehow
         try {
           var a = $("domExp").innerHTML.split(': ');
+          var c;
+          var strLoc=a[1];
+          for(c=2;c<a.length;c++){
+        	  var strLoc=strLoc+': '+a[c];  
+          }
+        	  
           //If the element is a link, get rid of the all the garbage
           if (a[0] == 'Link') {
-              a[1] = a[1].replace(/(<([^>]+)>)/ig, "");
-              a[1] = a[1].replace(/\n/g, "");
+              strLoc = strLoc.replace(/(<([^>]+)>)/ig, "");
+              strLoc = strLoc.replace(/\n/g, "");
           }
           
           if($(id+'method').value=='highlight'){
         	  
-        	  $(id + 'option').value= (a[0].toLowerCase()).trim()+' : '+a[1].trim();  
+        	  $(id + 'option').value= (a[0].toLowerCase()).trim()+' : '+strLoc.trim();  
           }
           else{
         	  $(id + 'optionType').value = 'opt'+a[0].toLowerCase();
-        	  $(id + 'option').value = a[1];
+        	  $(id + 'option').value = strLoc;
           	}
           $(id + 'option').focus();
           
@@ -195,13 +201,18 @@ windmill.ui.domexplorer = new function() {
         //Incase if that node has been removed somehow
         try {
           var a = $("domExp").innerHTML.split(': ');
+          var c;
+          var strLoc=a[1];
+          for(c=2;c<a.length;c++){
+        	  var strLoc=strLoc+': '+a[c];  
+          }
           //If the element is a link, get rid of the all the garbage
           if (a[0] == 'Link') {
-              a[1] = a[1].replace(/(<([^>]+)>)/ig, "");
-              a[1] = a[1].replace(/\n/g, "");
+        	  strLoc = strLoc.replace(/(<([^>]+)>)/ig, "");
+        	  strLoc = strLoc.replace(/\n/g, "");
           }
           $(id + 'locatorType').value = a[0].toLowerCase();
-          $(id + 'locator').value = a[1];
+          $(id + 'locator').value = strLoc;
           $(id + 'locator').focus();
         }
         catch(error) {
@@ -240,11 +251,17 @@ windmill.ui.domexplorer = new function() {
     var optId = windmill.ui.remote.selectedElementOption;
     if(optId!=null){
     	if(this.prevHighValue!=null){
-    		var a = $("domExp").innerHTML.split(':');
+    		var a = $("domExp").innerHTML.split(': ');
+            var c;
+            var strLoc=a[1];
+            for(c=2;c<a.length;c++){
+          	  var strLoc=strLoc+': '+a[c];  
+            }
+            
     		if(this.prevHighValue.trim()=='')
-    			$(optId).value = a[0].toLowerCase()+' : '+a[1].trim();
+    			$(optId).value = a[0].toLowerCase()+' : '+strLoc.trim();
     		else
-    			$(optId).value = this.prevHighValue+', '+a[0].toLowerCase()+' : '+a[1].trim();
+    			$(optId).value = this.prevHighValue+', '+a[0].toLowerCase()+' : '+strLoc.trim();
     	}
     }
     	
