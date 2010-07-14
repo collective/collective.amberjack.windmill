@@ -824,7 +824,7 @@ windmill.ui.remote = new function() {
     
     
     //obtain current step or create new one
-    this.getSuite = function(suiteName, newFlag,load) {
+    this.getSuite = function(suiteN, newFlag,load) {
     	
         if (typeof(newFlag) == "undefined"){   
           var newFlag = false;
@@ -833,27 +833,30 @@ windmill.ui.remote = new function() {
             var load = false;
           }
         //If what we really want is a new step, the newFlag was passed
+        var suiteName=null;
         if (newFlag){
-        	if(suiteName==null){ //if name step == null--> default name
-        		var suiteName = 'recStep' + windmill.ui.recordSuiteNum;
+        	if(suiteN==null){ //if name step == null--> default name
+        		suiteName = 'recStep' + windmill.ui.recordSuiteNum;
             }
         	else{ //otherwise new suite with passed name
-        		var suiteName = suiteName;
+        		 suiteName = suiteN;
         	}
             windmill.ui.currentSuite = suiteName;
+           
          }
         //if not newFlag
         else {
           //if there's a step selected
           if (windmill.ui.currentSuite){
-        	  var suiteName = windmill.ui.currentSuite;
+        	  suiteName = windmill.ui.currentSuite;
           }
           //default to a new one
           else {
-            var suiteName = 'recStep' + windmill.ui.recordSuiteNum;
-            windmill.ui.currentSuite=suiteName;
+        	  suiteName = 'recStep' + windmill.ui.recordSuiteNum;
+        	  windmill.ui.currentSuite=suiteName;
           }
         } 
+            	
         var suite = $(suiteName);
         if (suite == null) { //create new step
             var ide = $('ideForm');
@@ -875,7 +878,7 @@ windmill.ui.remote = new function() {
             	primasuite=true;
             //Append the new step to the IDE
             $('ideForm').appendChild(suite);
-            if(load==false) //if you are loading a tutorial loads the step's url
+            if(load==false) //if you are not loading a tutorial get the step's url from the page
             	$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","");
             	
             var catchEnter = function(e){

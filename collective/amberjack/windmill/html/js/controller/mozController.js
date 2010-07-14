@@ -108,7 +108,12 @@ windmill.controller.check = function(paramObject){
 
 //Radio buttons are even WIERDER in safari, not breaking in FF
 windmill.controller.radio = function(paramObject){
-  return windmill.controller.click(paramObject);      
+	
+	var element = lookupNode(paramObject);
+    if(element && windmill.testWin().jQuery)
+    	return windmill.testWin().jQuery(element).click();
+    else
+    	return windmill.controller.click(paramObject);      
 };
 
 //Double click for Mozilla

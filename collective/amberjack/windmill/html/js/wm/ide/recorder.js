@@ -45,7 +45,7 @@ windmill.ui.recorder = new function() {
     this.writeJsonClicks = function(e) {
     	windmill.ui.recorder.tiny_drop_down=false;
     	windmill.ui.recorder.internal_link=false;
-        if (windmill.ui.recorder.recordState == false) { return; }
+    	if (windmill.ui.recorder.recordState == false) { return; }       
         var locator = '';
         var locValue = '';
         var aggAzione=true;
@@ -198,7 +198,7 @@ windmill.ui.recorder = new function() {
           /*  if (e.type == 'dblclick') {
                 windmill.ui.remote.addAction(windmill.ui.remote.buildAction('doubleClick', params));
             }*/
-            
+        		
         		if (e.target.type == "checkbox"){
         			windmill.ui.remote.addAction(windmill.ui.remote.buildAction('check', params));
         		}
@@ -250,7 +250,8 @@ windmill.ui.recorder = new function() {
 
     //Writing json to the remote for the change events
     this.writeJsonChange = function(e) {
-        if (windmill.ui.recorder.recordState == false) {
+    	
+    	if (windmill.ui.recorder.recordState == false) {
             return;
         }
         var locator = '';
@@ -304,7 +305,6 @@ windmill.ui.recorder = new function() {
         else if (e.target.type == 'select-one') {
             params['option'] = e.target.options[e.target.selectedIndex].text;
             windmill.ui.remote.addAction(windmill.ui.remote.buildAction('select', params));
-
         }
         
         windmill.ui.remote.scrollRecorderTextArea();
