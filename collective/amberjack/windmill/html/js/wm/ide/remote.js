@@ -743,6 +743,8 @@ windmill.ui.remote = new function() {
 
 
     this.addAction = function(action) {
+    	if($('ideForm').childNodes.length<=0)
+    		windmill.ui.incRecSuite();
         var suite = this.getSuite();  //return current step or new if there aren't steps
         suite.style.height = '';
         if (typeof(action) == 'undefined') {  
