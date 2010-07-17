@@ -2,7 +2,7 @@
 collective.amberjack.windmill
 -----------------------------
 
-collective.amberjack.windmill is a TTW tool for creating tutorials obtained by extending windmill testing framework.
+collective.amberjack.windmill is a TTW tool for creating tutorials obtained by extending "Windmill Testing Framework".
 
 
 Useful links

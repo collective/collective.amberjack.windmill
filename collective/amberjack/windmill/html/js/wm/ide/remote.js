@@ -774,7 +774,7 @@ windmill.ui.remote = new function() {
     //Update all the required DOM to rename the step
     this.updateSuite = function(suiteName){
       var newSN = prompt("New Step Name?",suiteName);
-      if ((!newSN) || (newSN == "")){
+      if ((!newSN) || (newSN == "") || jQuery('#'+newSN)[0]){
         return;
       }
 
