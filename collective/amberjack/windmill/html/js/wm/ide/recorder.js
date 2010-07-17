@@ -173,7 +173,8 @@ windmill.ui.recorder = new function() {
         	if (locValue != "") {
         		var editorRestore={}
         		for(var Edi in windmill.ui.recorder.arrEdit){
-        			editorRestore[Edi]=windmill.ui.recorder.arrEdit[Edi];
+        			if(windmill.ui.recorder.arrEdit[Edi]!=null)
+        				editorRestore[Edi]=windmill.ui.recorder.arrEdit[Edi];
         		}
         		for(var Edi in windmill.ui.recorder.arrEdit){
         			if((locator=='xpath' && (locValue.indexOf('@id=\''+Edi+'_image\'')!=-1 || locValue.indexOf('@id=\''+Edi+'_cell_props\'')!=-1 || locValue.indexOf('@id=\''+Edi+'_table\'')!=-1 || locValue.indexOf('@id=\''+Edi+'_anchor\'')!=-1
@@ -396,14 +397,18 @@ windmill.ui.recorder = new function() {
     						 params['editor']='';
     						 paramsWait['timeout'] = 40000;
     						 var actId;
-    						 if(windmill.ui.recorder.arrEdit[edit.id]==null){
+    						 if(windmill.ui.recorder.arrEdit[edit.id]===null){
     							 windmill.ui.remote.addAction(windmill.ui.remote.buildAction('waits.forElement', paramsWait));
     							 actId=windmill.ui.remote.addAction(windmill.ui.remote.buildAction('editor', params));
     							 windmill.ui.recorder.arrEdit[edit.id]=actId;
+    							 eD=function(){tinyMCE.get(actId+'option').setContent(contenuto);}
+    							 setTimeout("eD()",100) //for wait tiny editor loading
     						 }
     						 else actId=windmill.ui.recorder.arrEdit[edit.id];
-    						 tinyMCE.execCommand('mceAddControl', false, actId+'option');
-    						 tinyMCE.get(actId+'option').setContent(contenuto);
+    						 if(windmill.ui.recorder.arrEdit[edit.id]!=null){
+    							 tinyMCE.execCommand('mceAddControl', false, actId+'option');
+    							 tinyMCE.get(actId+'option').setContent(contenuto);
+    						 }
     					 }
     				 });
     				 el.onKeyUp.add(function(edit) {  //used in recording state for update editor in the IDE when i type in the editor in the page
@@ -416,7 +421,7 @@ windmill.ui.recorder = new function() {
     						 params['editor']='';
     						 paramsWait['timeout'] = 40000;
     						 var actId;
-    						 if(windmill.ui.recorder.arrEdit[edit.id]==null){
+    						 if(windmill.ui.recorder.arrEdit[edit.id]===null){
     							 windmill.ui.remote.addAction(windmill.ui.remote.buildAction('waits.forElement', paramsWait));
     							 actId=windmill.ui.remote.addAction(windmill.ui.remote.buildAction('editor', params));
     							 windmill.ui.recorder.arrEdit[edit.id]=actId;
@@ -424,8 +429,10 @@ windmill.ui.recorder = new function() {
     							 setTimeout("eD()",100) //for wait tiny editor loading
     						 }
     						 else actId=windmill.ui.recorder.arrEdit[edit.id];
-    						 tinyMCE.execCommand('mceAddControl', false, actId+'option');
-    						 tinyMCE.get(actId+'option').setContent(contenuto);
+    						 if(windmill.ui.recorder.arrEdit[edit.id]!=null){
+    							 tinyMCE.execCommand('mceAddControl', false, actId+'option');
+    							 tinyMCE.get(actId+'option').setContent(contenuto);
+    						 }
     					 }
     				 });
     			     el.onClick.add(function(edit) {   //used in DOM Explorer when click on tiny editor
