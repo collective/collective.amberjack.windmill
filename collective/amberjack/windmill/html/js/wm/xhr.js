@@ -313,8 +313,19 @@ windmill.xhr = new function() {
         }
         if(actionObj.params['titleTut'])
         	$("titTut").value=actionObj.params['titleTut'];
-        if(actionObj.params['url'])
-        	$(suite.id+"Url").value=actionObj.params['url'];
+        if(actionObj.params['SandboxBase']){
+        	if($("Sandbox").checked==false)
+        		$("Sandbox").click();
+        	$("SandboxBase").value=actionObj.params['SandboxBase'];
+        }
+        if(actionObj.params['PloneSiteUrl'])
+        	$("PloneSiteUrl").value=actionObj.params['PloneSiteUrl'];
+       
+        if(actionObj.params['url']){
+        	if(((actionObj.params['url']).indexOf("ABS/"))!=-1)
+        		$(suite.id+"Header").style.background = "#e00";
+        	$(suite.id+"Url").value=actionObj.params['url'].replace("ABS","");
+        }
         
         if(actionObj.method=='waits.forPageLoad')
         windmill.ui.incRecSuite();

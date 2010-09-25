@@ -46,6 +46,8 @@ windmill.ui.remote = new function() {
     
               						var metNode = $(suite.childNodes[k].id + 'method').value;																		
               						$(suite.childNodes[k].id + 'method').style.visibility='hidden';
+              						if($(suite.childNodes[k].id + 'Conditions'))
+              							$(suite.childNodes[k].id + 'Conditions').style.display='none';
               						$(suite.childNodes[k].id + 'aggSotto').style.display='none';
               						$(suite.childNodes[k].id + 'aggSopra').style.display='none';
               						if(metNode=='editorSelect'){
@@ -105,6 +107,8 @@ windmill.ui.remote = new function() {
               				for (var k = 1; k < suite.childNodes.length; k++) {
               					 	var metNode = $(suite.childNodes[k].id + 'method').value;																		
               						$(suite.childNodes[k].id + 'method').style.visibility='visible';
+              						if($(suite.childNodes[k].id + 'Conditions'))
+              							$(suite.childNodes[k].id + 'Conditions').style.display='inline';
               						$(suite.childNodes[k].id + 'aggSotto').style.display='inline';
               						$(suite.childNodes[k].id + 'aggSopra').style.display='inline';
               						if(metNode=='editorSelect'){
@@ -148,6 +152,8 @@ windmill.ui.remote = new function() {
 
                 						var metNode = $(idAc + 'method').value;																		
                 						$(idAc + 'method').style.visibility='hidden';
+                						if($(idAc + 'Conditions'))
+                							$(idAc + 'Conditions').style.display='none';
                 						$(idAc + 'aggSotto').style.display='none';
                 						$(idAc + 'aggSopra').style.display='none';
                 						if(metNode=='editorSelect'){
@@ -187,7 +193,8 @@ windmill.ui.remote = new function() {
    
                 						var metNode = $(idAc + 'method').value;																		
                 						 $(idAc + 'method').style.visibility='visible';
-                						
+                						 if($(idAc + 'Conditions'))
+                							 $(idAc + 'Conditions').style.display='inline';
                 						$(idAc + 'aggSotto').style.display='inline';
                 						$(idAc + 'aggSopra').style.display='inline';
                 					
@@ -589,11 +596,26 @@ windmill.ui.remote = new function() {
         	}
         }
         
+      
         //Preserve the value that was in there
         try {
+          var custcond=0;
+          var oldConditionSelect2='';
+          var inputCondField='';
+          if($(id+'ComboCond')){
+        	  var ind=$(id+'ComboCond').selectedIndex;
+        	  var oldConditionSelect=$(id+'ComboCond')[ind].value;
+        	  if(oldConditionSelect=='Custom'){
+        		  custcond=1;
+        		  var ind2=$(id+'ComboCond2').selectedIndex;
+        		  oldConditionSelect2=$(id+'ComboCond2')[ind2].value;
+        		  inputCondField=$(id+'ConditionInput').value;
+        	  }
+          }
           var oldDesc=$(id + "DescId").value;
           var oldLocator = $(id + "locator").value; // locator input field
           var oldLocatorType = $(id + "locatorType").value; //locator type (id,link,name,ecc ..)
+  
         }
         catch(err) { }
         
@@ -623,6 +645,15 @@ windmill.ui.remote = new function() {
         
         if (typeof(oldDesc) != 'undefined')
         	 $(id + "DescId").value = oldDesc;
+        
+        if($(id+'ComboCond')){
+        	$(id+'ComboCond').value=oldConditionSelect;
+        	if(custcond==1){
+        		windmill.ui.remote.CustomConditions(id);
+        		$(id+'ComboCond2').value=oldConditionSelect2; 	
+        		$(id+'ConditionInput').value=inputCondField;
+        	}
+        }
         
         //safari hack for resizing the suite div to accomodate the new action
         $(id).style.height = '';
@@ -880,9 +911,22 @@ windmill.ui.remote = new function() {
             	primasuite=true;
             //Append the new step to the IDE
             $('ideForm').appendChild(suite);
-            if(load==false) //if you are not loading a tutorial get the step's url from the page
-            	$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","");
+            if(load==false){ //if you are not loading a tutorial get the step's url from the page
+        		if($("PloneSiteUrl").value=="" || $("PloneSiteUrl").value.trim()=='')
+        			$("PloneSiteUrl").value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,(windmill.testWin().location.href.replace("/windmill-serv/start.html","").length)-1);
             	
+        		if($("Sandbox").checked==true && (windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,($("SandboxBase").value.trim()).length)!=$("SandboxBase").value.trim())){ //sandbox checked but page's url is outside the base folder	
+            		$(suite.id+"Header").style.background = "#e00";
+            		$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("PloneSiteUrl").value.trim(),"");
+            	}
+            	else if($("Sandbox").checked==true){
+            		if($("SandboxBase").value.trim()=="")
+            			$("SandboxBase").value=$("PloneSiteUrl").value.trim();
+            		$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("SandboxBase").value.trim(),"");
+            	}
+            	else
+            		$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("PloneSiteUrl").value.trim(),"");
+            }
             var catchEnter = function(e){
             		if (e.keyCode == 13){
             			var index = e.target.id.lastIndexOf("Url"); 
@@ -994,6 +1038,8 @@ windmill.ui.remote = new function() {
                 }
                 else {
                 	var paramsObj = {};
+                	var idSel='';
+                    var type='';
                 	var metNode = $(suite.childNodes[j].id + 'method');
 					//if we have a select vs a span (1 option)
 					if (metNode.tagName.toLowerCase() == "select"){
@@ -1007,11 +1053,14 @@ windmill.ui.remote = new function() {
                     if (windmill.registry.methods[actionObj.method].locator) {
                     	var si = $(suite.childNodes[j].id + 'locatorType').selectedIndex;
                     	paramsObj[$(suite.childNodes[j].id + 'locatorType')[si].value] = $(suite.childNodes[j].id + 'locator').value;
+                    	idSel=$(suite.childNodes[j].id + 'locator').value;
+            			type=$(suite.childNodes[j].id + 'locatorType')[si].value;
                     }
                     if(actionObj.method=='editorSelect'){
                     	paramsObj['bookmark']=$(suite.childNodes[j].id + 'bookmark').value; 
                 	  
                     }
+                    
                     if (windmill.registry.methods[actionObj.method].option) {
                     	if(actionObj.method=='editor'){
                     		if(tinyMCE.get(suite.childNodes[j].id + 'option'))
@@ -1025,19 +1074,66 @@ windmill.ui.remote = new function() {
                     		if (optNode.tagName.toLowerCase() == "select"){
                     			var si = $(suite.childNodes[j].id + 'optionType').selectedIndex;
                     			paramsObj[$(suite.childNodes[j].id + 'optionType')[si].value] = $(suite.childNodes[j].id + 'option').value;
+                    			
                     		}
                     		else {  //span
-                    			paramsObj[$(suite.childNodes[j].id + 'optionType').innerHTML] = $(suite.childNodes[j].id + 'option').value; 
+                    			paramsObj[$(suite.childNodes[j].id + 'optionType').innerHTML] = $(suite.childNodes[j].id + 'option').value;
+                    			if(actionObj.method=='highlight')
+                    				idSel=$(suite.childNodes[j].id + 'option').value;
                     		}
                     	}
                     }
                     if(j==1){
-  							paramsObj['url']=$(suite.id+'Url').value;
+  							
   							paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
   							paramsObj['titleTut']=id;
+  							paramsObj['PloneSiteUrl']=$("PloneSiteUrl").value.trim();
+							  
+							if($("Sandbox").checked==true && $("SandboxBase").value.trim()!=""){  //if sandbox checked && exists sandbox base url
+								  paramsObj['SandboxBase']=$("SandboxBase").value.trim();
+								  if($(suite.id+"Header").style.backgroundColor.trim() =="rgb(238, 0, 0)")
+									  paramsObj['url']='ABS'+$(suite.id+'Url').value.trim();
+								  else 
+									   paramsObj['url']=$(suite.id+'Url').value;
+							}
+							else
+								  paramsObj['url']=$(suite.id+'Url').value;
   					}
                     paramsObj['nameStep']=id;
                     paramsObj['description'] = $(suite.childNodes[j].id + 'DescId').value;
+                    if($(suite.childNodes[j].id+'ComboCond')){
+                    	var ind=$(suite.childNodes[j].id+'ComboCond').selectedIndex;
+                    	if(($(suite.childNodes[j].id+'ComboCond')[ind].value)!='None'){
+                    		if(($(suite.childNodes[j].id+'ComboCond')[ind].value)=='Standard')
+                    			paramsObj['condition']='checkstep';
+                    		else{ //custom condition
+                    			var inputValue=$(suite.childNodes[j].id+'ConditionInput').value.trim();
+                    			if(inputValue!=''){ //if the custom condition is incomplete it'll ignored
+                    				var ind2=$(suite.childNodes[j].id+'ComboCond2').selectedIndex;
+                    				var operator=$(suite.childNodes[j].id+'ComboCond2')[ind2].value;
+                    				if(actionObj.method!='highlight'){
+                    					if(type!='')
+                    						paramsObj['condition']='{"selector":{"'+idSel+'":"'+type+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
+                    				}
+                    				else{ //highlight method
+                    					if(idSel.trim()!=''){
+                    						var selector='';
+                    						var arr=idSel.split(',');
+                    						for (i=0; i<arr.length; i++){
+                    							if(selector!='')
+                    								selector+=',';
+                    							var k=arr[i].split(':');
+                    							selector+='"'+k[1].trim()+'":"'+k[0].trim()+'"';
+                    						}
+                    						paramsObj['condition']='{"selector":{'+selector+'},"operator":"'+operator+'","value":"'+inputValue+'"}';
+                    					}
+                    				}
+                    			}
+                    	
+                    		}
+                    	
+                    	}
+                    }
                     actionObj.params = paramsObj;
                 }
                 testArray.push(actionObj);
@@ -1113,6 +1209,8 @@ windmill.ui.remote = new function() {
             						actionObj.params = eval('(' + $(suite.childNodes[k].id + 'params').value + ')');  //convert a JSON text into an object
             					}
             					else {
+            						var idSel='';
+            	                    var type='';
             						var paramsObj={};
             						var metNode = $(suite.childNodes[k].id + 'method');
         							//if we have a select vs a span (1 option)
@@ -1127,6 +1225,8 @@ windmill.ui.remote = new function() {
         							if (windmill.registry.methods[actionObj.method].locator) {
             							var si = $(suite.childNodes[k].id + 'locatorType').selectedIndex;
             							paramsObj[$(suite.childNodes[k].id + 'locatorType')[si].value] = $(suite.childNodes[k].id + 'locator').value;
+            							idSel=$(suite.childNodes[k].id + 'locator').value;
+            	            			type=$(suite.childNodes[k].id + 'locatorType')[si].value;
             						}
         							
         							if(actionObj.method=='editorSelect')
@@ -1146,21 +1246,71 @@ windmill.ui.remote = new function() {
                                         		paramsObj[$(suite.childNodes[k].id + 'optionType')[si].value] = $(suite.childNodes[k].id + 'option').value;
                                         	}
                                         	else {  //span
-              									paramsObj[$(suite.childNodes[k].id + 'optionType').innerHTML] = $(suite.childNodes[k].id + 'option').value; 
+              									paramsObj[$(suite.childNodes[k].id + 'optionType').innerHTML] = $(suite.childNodes[k].id + 'option').value;
+              									if(actionObj.method=='highlight')
+              	                    				idSel=$(suite.childNodes[k].id + 'option').value;
                                         	}
               						    }
             						  }
         								
         							  if(k==1){
-        								  paramsObj['url']=$(suite.id+'Url').value;
         								  paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
-        								  if($("titTut").value.trim()=='' && lang=='amberjack')  //amberjack tutorial must have a title
-        									  paramsObj['titleTut']="Tutorial";
+        								  if(j==0){
+        									  if($("titTut").value.trim()=='' && lang=='amberjack')  //amberjack tutorial must have a title
+        										  paramsObj['titleTut']="Tutorial";
+        									  else
+        										  paramsObj['titleTut']=$("titTut").value.trim();
+        								  
+        									  paramsObj['PloneSiteUrl']=$("PloneSiteUrl").value.trim();
+        								  
+        									  if($("Sandbox").checked==true && $("SandboxBase").value.trim()!="")  //if sandbox checked && exists sandbox base url
+        										  paramsObj['SandboxBase']=$("SandboxBase").value.trim();
+        								  }
+        								  
+        								  if($("Sandbox").checked==true && $("SandboxBase").value.trim()!=""){
+        									  	if($(suite.id+"Header").style.backgroundColor.trim() =="rgb(238, 0, 0)")
+        									  		paramsObj['url']='ABS'+$(suite.id+'Url').value.trim();
+        									  	else 
+        									  		paramsObj['url']=$(suite.id+'Url').value;
+        								  }
         								  else
-        									  paramsObj['titleTut']=$("titTut").value.trim();
+        									  paramsObj['url']=$(suite.id+'Url').value;
         							  }
         							  paramsObj['nameStep']=name;
         							  paramsObj['description'] = $(suite.childNodes[k].id + 'DescId').value;
+        							  if($(suite.childNodes[k].id+'ComboCond')){
+        								  var ind=$(suite.childNodes[k].id+'ComboCond').selectedIndex;
+        								  if(($(suite.childNodes[k].id+'ComboCond')[ind].value)!='None'){
+        									  if(($(suite.childNodes[k].id+'ComboCond')[ind].value)=='Standard')
+        										  paramsObj['condition']='checkstep';
+        									  else{ //custom condition
+        										  var inputValue=$(suite.childNodes[k].id+'ConditionInput').value.trim();
+        										  if(inputValue!=''){ //if the custom condition is incomplete it'll ignored
+        											  var ind2=$(suite.childNodes[k].id+'ComboCond2').selectedIndex;
+        											  var operator=$(suite.childNodes[k].id+'ComboCond2')[ind2].value;
+        											  if(actionObj.method!='highlight'){
+        												  if(type!='')
+        													  paramsObj['condition']='{"selector":{"'+idSel+'":"'+type+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
+        											  }
+        											  else{ //highlight method
+        												  if(idSel.trim()!=''){
+        													  var selector='';
+        													  var arr=idSel.split(',');
+        													  for (i=0; i<arr.length; i++){
+        														  if(selector!='')
+        															  selector+=',';
+        														  var k=arr[i].split(':');
+        														  selector+='"'+k[1].trim()+'":"'+k[0].trim()+'"';
+        													  }
+        													  paramsObj['condition']='{"selector":{'+selector+'},"operator":"'+operator+'","value":"'+inputValue+'"}';
+        												  }
+        											  }
+        										  }
+        			                    	
+        									  }
+        			                    	
+        								  }
+            							}
         							  actionObj.params=paramsObj;
             					 }
             					 testArray.push(actionObj);	
@@ -1209,6 +1359,9 @@ windmill.ui.remote = new function() {
                  }
         	fleegix.fx.fadeOut($('ideForm'));  //form IDE
         	$("titTut").value=''; //reset title's value
+        	$("PloneSiteUrl").value=''; //reset starting url
+        	if($("Sandbox").checked==true)
+        		$("Sandbox").click();
         	d = function() {
                 $('ideForm').innerHTML = '';
                 fleegix.fx.fadeIn($('ideForm'));
@@ -1602,6 +1755,94 @@ windmill.ui.remote = new function() {
         jQuery(action).append(jQuery(methods));
         jQuery(action).append(jQuery(buttonNode));
         
+        var loadCond='';  //if you are loading a tutorial
+        if (state.params['condition'])
+        	loadCond=state.params['condition'];
+        	if(loadCond!='checkstep' && loadCond!='')
+        		loadCond=eval('(' + state.params['condition'] + ')');
+            
+         /*type of condition*/
+        if(state.method!='waits.forPageLoad' && state.method!='waits.sleep'){
+        	var cond=document.createElement('span');
+        	cond.id=action.id+'Conditions';
+        	cond.innerHTML="<br/><br/>";
+        	var conditionText=document.createElement('span');
+        	conditionText.innerHTML='Condition: ';
+        	conditionText.className='textSpan';
+        	var combo_box = document.createElement('select');
+        	jQuery(combo_box).attr("onchange","windmill.ui.remote.CustomConditions('"+action.id+"')");
+        	combo_box.id=action.id+"ComboCond";
+        	combo_box.name = 'Conditions';
+        	var choice = document.createElement('option');
+        	choice.value = 'None';
+        	choice.title="Microstep will not be checked during the run of the tour";
+        	choice.appendChild(document.createTextNode('None'));
+        	combo_box.appendChild(choice);
+        	choice = document.createElement('option');
+        	choice.value = 'Standard';
+        	if(loadCond!='' && loadCond=='checkstep')
+        		choice.selected=true;
+        	choice.title="Microstep will be checked during the run of the tour.";
+        	choice.appendChild(document.createTextNode('Standard'));
+        	combo_box.appendChild(choice);
+        	choice = document.createElement('option');
+        	choice.value = 'Custom';
+        	if(loadCond!='' && loadCond!='checkstep')
+        		choice.selected=true;
+        	choice.title="During the run of the tour, the next condition will be checked";
+        	choice.appendChild(document.createTextNode('Custom'));
+        	combo_box.appendChild(choice);
+        	cond.appendChild(conditionText);
+        	cond.appendChild(combo_box);
+        	if(loadCond!='' && loadCond!='checkstep'){
+        		 var custCond=document.createElement('span');
+        		 custCond.innerHTML=" ";
+         		 custCond.id=action.id+'CustConditions';
+        		 var custSpace=document.createElement('span');
+        		 custSpace.innerHTML=" ";
+        		 var conditionInput=document.createElement('input');
+        		 conditionInput.id=action.id+"ConditionInput";
+        		 if(loadCond['value'].trim()!='')
+        			 conditionInput.value=loadCond['value'].trim();
+        		 var combo_box2 = document.createElement('select');
+        		 combo_box2.id=action.id+"ComboCond2"
+        		 combo_box2.name = 'CustConditions';
+        		 choice = document.createElement('option');
+        		 choice.value = 'Equal';
+        		 if(loadCond['operator']=='Equal')
+        			 choice.selected=true;
+        		 choice.appendChild(document.createTextNode('Equal'));
+        		 combo_box2.appendChild(choice);
+        		 choice = document.createElement('option');
+        		 choice.value = 'Not Equal';
+        		 if(loadCond['operator']=='Not Equal')
+        			 choice.selected=true;
+        		 choice.appendChild(document.createTextNode('Not Equal'));
+        		 combo_box2.appendChild(choice);
+        		 choice = document.createElement('option');
+        		 choice.value = 'Contains';
+        		 if(loadCond['operator']=='Contains')
+        			 choice.selected=true;
+        		 choice.appendChild(document.createTextNode('Contains'));
+        		 combo_box2.appendChild(choice);
+        		 choice = document.createElement('option');
+        		 choice.value = 'Not Contains';
+        		 if(loadCond['operator']=='Not Contains')
+        			 choice.selected=true;
+        		 choice.appendChild(document.createTextNode('Not Contains'));
+        		 combo_box2.appendChild(choice);
+        		 custCond.appendChild(combo_box2);
+        		 custCond.appendChild(custSpace);
+             	 custCond.appendChild(conditionInput);
+             	 cond.appendChild(custCond);
+        	}
+        	
+         	jQuery(action).append(cond);
+        	if(this.simple==true)
+        		jQuery(cond).hide();
+        }
+         
+        
        //add span for microstep descriptive writing          	
         var inst=jQuery(document.createElement('span')).addClass("textSpan").attr('id',action.id+'inst');
         if(this.simple==false || state.method=="editor")
@@ -1614,6 +1855,8 @@ windmill.ui.remote = new function() {
         	spazio.hide();
         jQuery(action).append(spazio);
          
+        
+        
         //if this microstep has locators, add them in a container
         if (locators){
           var locCont = document.createElement('div');
@@ -1679,4 +1922,72 @@ windmill.ui.remote = new function() {
     
          return action;
     };
+    
+    //Add/remove sandbox field for base url
+    this.sandboxChanged = function(){
+    	
+    	if($('Sandbox').checked==true){
+    		var textBaseUrl = document.createElement('span');
+    		textBaseUrl.id="TextSandboxBase";
+    		textBaseUrl.innerHTML="<strong>, Sandbox Base url: </strong>";
+    		textBaseUrl.title="Place where you create objects in this tour";
+    		var baseUrl = document.createElement('input');
+    		baseUrl.id="SandboxBase";
+    		baseUrl.title="Place where you create objects in this tour";
+    		 $("SandB").appendChild(textBaseUrl);
+    		 $("SandB").appendChild(baseUrl);
+    	}
+    	else{ 
+    		
+    		$("SandB").removeChild($("SandboxBase"));
+    		$("SandB").removeChild($("TextSandboxBase"));
+    			
+    	}
+    	
+     };
+     
+     this.CustomConditions=function (id){  //called when you change type of condition in the select to create/remove the custom fields
+    	 var selIndex = $(id+'ComboCond').selectedIndex;
+    	 value = $(id+'ComboCond').options[selIndex].value;
+    	 if(value=='Custom' && ! $(id+'CustConditions')){
+    		 var custCond=document.createElement('span');
+    		 custCond.innerHTML=" ";
+    		 custCond.id=id+'CustConditions';
+    		 var custSpace=document.createElement('span');
+    		 custSpace.innerHTML=" ";
+    		 var conditionInput=document.createElement('input');
+    		 conditionInput.id=id+"ConditionInput";
+    		 var combo_box = document.createElement('select');
+    		 combo_box.id=id+"ComboCond2"
+    		 combo_box.name = 'CustConditions';
+    		 var choice = document.createElement('option');
+    		 choice.value = 'Equal';
+    		 choice.appendChild(document.createTextNode('Equal'));
+    		 combo_box.appendChild(choice);
+    		 choice = document.createElement('option');
+    		 choice.value = 'Not Equal';
+    		 choice.appendChild(document.createTextNode('Not Equal'));
+    		 combo_box.appendChild(choice);
+    		 choice = document.createElement('option');
+    		 choice.value = 'Contains';
+    		 choice.appendChild(document.createTextNode('Contains'));
+    		 combo_box.appendChild(choice);
+    		 choice = document.createElement('option');
+    		 choice.value = 'Not Contains';
+    		 choice.appendChild(document.createTextNode('Not Contains'));
+    		 combo_box.appendChild(choice);
+    		 custCond.appendChild(combo_box);
+    		 custCond.appendChild(custSpace);
+         	 custCond.appendChild(conditionInput);
+         	 $(id+'Conditions').appendChild(custCond);
+    		 
+    	  }
+    	 else if($(id+'CustConditions')){
+    		 $(id+'Conditions').removeChild($(id+'CustConditions'));
+    		 
+    	 }
+    	 
+     };
+     
+    
 };

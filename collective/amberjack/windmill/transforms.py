@@ -58,6 +58,8 @@ class Converter:
         count=1
         assoc={}
         title=''
+        sandboxUrl=''
+        ploneSite=''
         strName=None
         for step in self.tour:
             for k, v in step.items():
@@ -65,6 +67,10 @@ class Converter:
                     for key,val in step['params'].items():
                         if(key=='titleTut'):
                             title=val  #tutorial title
+                        elif(key=='SandboxBase'):
+                            sandboxUrl=val
+                        elif(key=='PloneSiteUrl'):
+                            ploneSite=val
             if(step['params']['nameStep']!=strName):
                 assoc[step['params']['nameStep']]=count
                 strName=step['params']['nameStep']
@@ -74,6 +80,10 @@ class Converter:
         c=0                                            
         self.config.add_section('amberjack')
         self.config.set('amberjack', 'title', title)
+        if(ploneSite!=''):
+            self.config.set('amberjack', 'starturl', ploneSite)
+        if(sandboxUrl!=''):
+            self.config.set('amberjack', 'sandboxurl', sandboxUrl)
         section_steps = ['']
         for step in self.tour:
             if(assoc[step['params']['nameStep']]==dec):
@@ -143,8 +153,15 @@ class Converter:
                 continue
             if(k=='nameStep'):
                 continue
+            if(k=='SandboxBase'):
+                continue
+            if(k=='PloneSiteUrl'):
+                continue
             if(k=='description'):
                 self.set(microstep_name,'description',v)  
+                continue
+            if(k=='condition'):
+                self.set(microstep_name,'condition',v)
                 continue
             if(k=='locators'):  #highlight method
                if (v==''):

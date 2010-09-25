@@ -161,7 +161,9 @@
       	</div>
     </div>
     
-    <span style="position:absolute;top:46px;z-index:98"><strong>&nbsp;TITLE: </strong><input id="titTut" type="text" /></span>  
+    <span style="position:absolute;top:46px;z-index:98"><strong>&nbsp;TITLE: </strong><input id="titTut" type="text" /></span>
+    <div style="position:absolute;top:75px;z-index:98"><strong>&nbsp;Plone site url: </strong><input id="PloneSiteUrl" type="text" /></span></div>
+	<div style="position:absolute;top:101px;z-index:98" id="SandB"><strong>&nbsp;Sandbox mode: </strong><input id="Sandbox" type="checkbox" onchange='windmill.ui.remote.sandboxChanged();'/></div>
 	
 	<div id="controllers">	 	
 		  <a href="#" title="Toggle Recorder">
@@ -186,7 +188,7 @@
   	 
 	 <div id="domExp"></div>
 	 
-  	 <div id="space" style="position:relative;top:18px;height:40px;"></div>
+  	 <div id="space" style="position:relative;top:18px;height:90px;"></div>
   	 
   	 <div id="runningStatus" align="center">
      	<br/><br/><br/><br/><br/>
@@ -194,7 +196,7 @@
      	<center><div id="progressbar"></div></center>
      </div>
      
-  	 <div id="sp" style="position:relative;height:40px;border-bottom:1px dotted black"></div>
+  	 <div id="sp" style="position:relative;height:40px;border-bottom:1px solid black"></div>
      <div id="tabs">
         <div id="ide" class="tab">
         	<form id="ideForm" name="ideForm" onsubmit="return false;" onscroll="scroll();"></form>
@@ -454,10 +456,10 @@
 
   var reFlow = function(){
     if (/MSIE[\/\s](\d+\.\d+)/.test(navigator.userAgent)){
-      document.getElementById('ideForm').style.height = document.body.clientHeight -160 + "px";
+      document.getElementById('ideForm').style.height = document.body.clientHeight -180 + "px";
     }
     else {
-      document.getElementById('ideForm').style.height = window.innerHeight -160 + "px";
+      document.getElementById('ideForm').style.height = window.innerHeight -180 + "px";
     }
   }
   jQuery(document).ready(reFlow);

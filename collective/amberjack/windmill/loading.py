@@ -38,9 +38,19 @@ def load_tutorial(self,suite_name,filename):
         urlStep={}
         stepNameMic={}
         title=''
+        startUrl=''
+        sandboxUrl=''
         i=0
         steps=config.get("amberjack","steps")
         title=config.get("amberjack","title")
+        try:
+                startUrl=config.get("amberjack","starturl")
+        except:
+                pass
+        try:
+                sandboxUrl=config.get("amberjack","sandboxurl")
+        except:
+                pass
         st=''
         for ch in steps:
             if(ch=='\n'):
@@ -93,6 +103,7 @@ def load_tutorial(self,suite_name,filename):
             old_style=False
             selector=None
             text=None
+            condition=None
             if(noMic.has_key(str(j))):
                 filecfg+='\tclient.highlight(nameStep=u\''+noMic[str(j)].split('_',1)[-1]+'\', url='+repr(urlStep[str(h)])+', descStep='+repr(descStep[str(h)])+', locators=u\'\', description=u\'\')\n'
                 oldNamestep=noMic[str(j)].split('_',1)[-1]
@@ -113,9 +124,16 @@ def load_tutorial(self,suite_name,filename):
             k=0
             if(j==0):
                 filecfg+="titleTut=u\""+title+"\""
+                if(sandboxUrl!=''):
+                    filecfg+=", SandboxBase=u\""+sandboxUrl+"\""
+            
+                if(startUrl!=''):
+                    filecfg+=", PloneSiteUrl=u\""+startUrl+"\""
+                    
                 k=1
             add=0
             
+                
             try:
                 selector = eval(config.get(microstep[str(j)], "selector"))
             except:
@@ -124,6 +142,11 @@ def load_tutorial(self,suite_name,filename):
                 text = eval(config.get(microstep[str(j)], "text"))
             except:
                 pass
+            try:
+                condition = config.get(microstep[str(j)], "condition")
+            except:
+                pass
+            
             if k==0:
                     if(stepNameMic[microstep[str(j)]].split('_',1)[-1]==oldNamestep):
                         filecfg+="nameStep"+"=u\""+stepNameMic[microstep[str(j)]].split('_',1)[-1]+"\""
@@ -148,6 +171,8 @@ def load_tutorial(self,suite_name,filename):
             except:
                 pass
             filecfg+=", description=u"+repr(description)
+            if condition != None:
+                filecfg+=", condition=u"+repr(condition)
             if selector != None:
                  if metodo=='highlight':
                      strloc=''

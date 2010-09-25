@@ -159,7 +159,17 @@ windmill.ui.playback = new function() {
     		  actionObj.method='open';
     		  var paramsObj = {};
     		  paramsObj.uuid = uuid;
-              paramsObj['url']=$(uuid).value;
+    		  if($("Sandbox").checked==true){
+    			  if($(suiteOnly+"Header").style.backgroundColor.trim() =="rgb(238, 0, 0)") //url out of sandbox
+    				  paramsObj['url']=$("PloneSiteUrl").value+$(uuid).value;
+    			  else{
+    				  if($("SandboxBase").value.trim()!="")
+    					  paramsObj['url']=$("SandboxBase").value+$(uuid).value;
+    				  else return;
+    			  }
+    		  }
+    		  else
+    			  paramsObj['url']=$("PloneSiteUrl").value+$(uuid).value;
               actionObj.params=paramsObj;
               testArray.push(actionObj);
               actionObj = {};
