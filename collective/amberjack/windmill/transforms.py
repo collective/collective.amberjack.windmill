@@ -38,7 +38,7 @@ class OrderedConfigParser(ConfigParser.RawConfigParser):
             stri+="[%s]\n" % section
             for (key, value) in self._sections[section].items(): 
                 if key != "__name__":
-                    if key!='steps' and key!='microsteps':     #insert editor formatting on the same line
+                    if key!='steps' and key!='microsteps' and key!='validators':     #insert editor formatting on the same line
                         stri+="%s = %s\n" % (key, str(value).replace('\n', ''))
                     else:
                         stri+="%s = %s\n" % (key, str(value).replace('\n', '\n\t'))
@@ -60,6 +60,7 @@ class Converter:
         title=''
         sandboxUrl=''
         ploneSite=''
+        validators=''
         strName=None
         for step in self.tour:
             for k, v in step.items():
@@ -71,6 +72,8 @@ class Converter:
                             sandboxUrl=val
                         elif(key=='PloneSiteUrl'):
                             ploneSite=val
+                        elif(key=='validators'):
+                            validators=val
             if(step['params']['nameStep']!=strName):
                 assoc[step['params']['nameStep']]=count
                 strName=step['params']['nameStep']
@@ -84,6 +87,12 @@ class Converter:
             self.config.set('amberjack', 'starturl', ploneSite)
         if(sandboxUrl!=''):
             self.config.set('amberjack', 'sandboxurl', sandboxUrl)
+        if(validators!=''):
+            section_validators = ['']
+            arr_validators=validators.split(';');
+            for vt in arr_validators:
+                section_validators.append(vt.strip())
+            self.set('amberjack', 'validators', section_validators)
         section_steps = ['']
         for step in self.tour:
             if(assoc[step['params']['nameStep']]==dec):
@@ -124,12 +133,7 @@ class Converter:
                 section_microsteps.append(microstep_name)
                 self.convert_microstep(st, microstep_name)
                 continue
-            #if k == 'validators':
-                #validators = ['']
-                #for validator in v:
-                #    validators.append(validator.__name__)
-                #self.set(step_name, 'validators', validators)
-                #continue    
+   
         if section_microsteps != ['']:
             self.set(step_name, 'microsteps', section_microsteps)
         sr=(step_name.split('_',1)[-1]).replace('_',' ')
@@ -156,6 +160,8 @@ class Converter:
             if(k=='SandboxBase'):
                 continue
             if(k=='PloneSiteUrl'):
+                continue
+            if(k=='validators'):
                 continue
             if(k=='description'):
                 self.set(microstep_name,'description',v)  

@@ -40,6 +40,8 @@ def load_tutorial(self,suite_name,filename):
         title=''
         startUrl=''
         sandboxUrl=''
+        validators=''
+        validator_arr=''
         i=0
         steps=config.get("amberjack","steps")
         title=config.get("amberjack","title")
@@ -51,6 +53,21 @@ def load_tutorial(self,suite_name,filename):
                 sandboxUrl=config.get("amberjack","sandboxurl")
         except:
                 pass
+        try:
+                validator_arr=config.get("amberjack","validators")
+        except:
+                pass
+            
+        if validator_arr!='':    
+            for vdt in validator_arr:
+                if(vdt=='\n'):
+                    if(validators!=''):
+                        validators+='; '
+                        continue
+                    else:
+                        continue
+                validators+=vdt
+            
         st=''
         for ch in steps:
             if(ch=='\n'):
@@ -129,6 +146,9 @@ def load_tutorial(self,suite_name,filename):
             
                 if(startUrl!=''):
                     filecfg+=", PloneSiteUrl=u\""+startUrl+"\""
+                    
+                if(validators!=''):
+                    filecfg+=", validators=u\""+validators+"\""
                     
                 k=1
             add=0

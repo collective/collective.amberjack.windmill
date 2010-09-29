@@ -321,6 +321,25 @@ windmill.xhr = new function() {
         if(actionObj.params['PloneSiteUrl'])
         	$("PloneSiteUrl").value=actionObj.params['PloneSiteUrl'];
        
+        if(actionObj.params['validators']){
+        	var validators=actionObj.params['validators'];
+        	var val_arr=validators.split(";");
+        	for(i=0;i<val_arr.length;i++){
+        		var sTemp=val_arr[i].trim().substring(8);
+        		var firstInd=sTemp.indexOf('(');
+        		var selectCond=sTemp.substring(0,firstInd);
+           		sTemp=sTemp.substring(firstInd);
+        		windmill.ui.remote.addPreCondition();
+    			$("PreCondSelect_"+$("NumPreCond").value).value=selectCond;
+    			windmill.ui.remote.changePreCond($("NumPreCond").value);
+    			if(selectCond!='isAnonymous' && selectCond!='isAuthenticated'){
+    				var inizioS=sTemp.lastIndexOf(',')+1;
+    				var fineS=sTemp.lastIndexOf(')');
+        			$("PreCondInput_"+$("NumPreCond").value).value=sTemp.substring(inizioS,fineS).replace(/'/g,'').trim();
+    			}
+   
+        	}
+        }
         if(actionObj.params['url']){
         	if(((actionObj.params['url']).indexOf("ABS/"))!=-1)
         		$(suite.id+"Header").style.background = "#e00";

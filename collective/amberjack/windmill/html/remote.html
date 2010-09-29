@@ -163,8 +163,7 @@
     
     <span style="position:absolute;top:46px;z-index:98"><strong>&nbsp;TITLE: </strong><input id="titTut" type="text" /></span>
     <div style="position:absolute;top:75px;z-index:98"><strong>&nbsp;Plone site url: </strong><input id="PloneSiteUrl" type="text" /></span></div>
-	<div style="position:absolute;top:101px;z-index:98" id="SandB"><strong>&nbsp;Sandbox mode: </strong><input id="Sandbox" type="checkbox" onchange='windmill.ui.remote.sandboxChanged();'/></div>
-	
+	<div style="position:absolute;top:101px;height:30px;z-index:98;background-color:white;width:90%;" id="SandB"><strong>&nbsp;Sandbox mode: </strong><input id="Sandbox" type="checkbox" onchange='windmill.ui.remote.sandboxChanged();'/></div>
 	<div id="controllers">	 	
 		  <a href="#" title="Toggle Recorder">
 			  <img title="Toggle Recorder" name='record' id="record" border="no" src="img/record.png" onclick="toggleRec();"/>
@@ -188,7 +187,16 @@
   	 
 	 <div id="domExp"></div>
 	 
-  	 <div id="space" style="position:relative;top:18px;height:90px;"></div>
+  	 <div id="space" style="position:relative;top:18px;height:120px;">
+  	 <!-- Pre-conditions -->
+  	 	<div style="position:relative;top:80px;z-index:97;" id="PreConds">
+			<input id="NumPreCond" type="hidden" value="0" />
+			<span id="PreCondSpan">
+				<strong>&nbsp;Pre-conditions: </strong>
+				<img title="Add Pre-condition" name='plusPreCond' id="plusPreCond" border="no" src="img/plus.png"  style="width:37px;height:29px;cursor:pointer;position:relative;top:10px;" onclick="windmill.ui.remote.addPreCondition()"/>
+			 </span>
+		</div>
+  	 </div>
   	 
   	 <div id="runningStatus" align="center">
      	<br/><br/><br/><br/><br/>
@@ -196,7 +204,9 @@
      	<center><div id="progressbar"></div></center>
      </div>
      
+     
   	 <div id="sp" style="position:relative;height:40px;border-bottom:1px solid black"></div>
+    	 
      <div id="tabs">
         <div id="ide" class="tab">
         	<form id="ideForm" name="ideForm" onsubmit="return false;" onscroll="scroll();"></form>
@@ -456,10 +466,10 @@
 
   var reFlow = function(){
     if (/MSIE[\/\s](\d+\.\d+)/.test(navigator.userAgent)){
-      document.getElementById('ideForm').style.height = document.body.clientHeight -180 + "px";
+      document.getElementById('ideForm').style.height = document.body.clientHeight -210 + "px";
     }
     else {
-      document.getElementById('ideForm').style.height = window.innerHeight -180 + "px";
+      document.getElementById('ideForm').style.height = window.innerHeight -210 + "px";
     }
   }
   jQuery(document).ready(reFlow);

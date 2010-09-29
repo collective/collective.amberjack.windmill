@@ -565,7 +565,19 @@ windmill.ui.remote = new function() {
         input_box = confirm("Are you sure you want to delete all the data in the IDE?");
         if (input_box == true) {
         	$("titTut").value=''; //reset title's value
-            fleegix.fx.fadeOut($('ideForm'));  //form IDE
+        	$("PloneSiteUrl").value=''; 
+        	if($("Sandbox").checked==true)
+        		$("Sandbox").click();
+        	if(parseInt($("NumPreCond").value)<=2){
+        		$('space').style.height=parseInt($('space').style.height.replace('px',""))-(parseInt($("NumPreCond").value)*40)+"px";
+        		document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))+(parseInt($("NumPreCond").value)*40)+"px";
+        	}
+        	else{
+        		$('space').style.height=parseInt($('space').style.height.replace('px',""))-80+"px";
+        		document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))+80+"px";
+        	}
+        	$("PreConds").innerHTML="<input id=\"NumPreCond\" type=\"hidden\" value=\"0\" /><span id=\"PreCondSpan\"><strong>&nbsp;Pre-conditions: </strong><img title=\"Add Pre-condition\" name='plusPreCond' id=\"plusPreCond\" border=\"no\" src=\"img/plus.png\"  style=\"width:37px;height:29px;cursor:pointer;position:relative;top:10px;\" onclick=\"windmill.ui.remote.addPreCondition()\"/></span>";	
+        	fleegix.fx.fadeOut($('ideForm'));  //form IDE
             d = function() {
                 $('ideForm').innerHTML = '';
                 windmill.ui.recorder.recordOff();
@@ -1088,6 +1100,49 @@ windmill.ui.remote = new function() {
   							paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
   							paramsObj['titleTut']=id;
   							paramsObj['PloneSiteUrl']=$("PloneSiteUrl").value.trim();
+  							
+  							//pre-conditions
+  							var numPreCond=parseInt($("NumPreCond").value);
+  							if(numPreCond!=0){
+  								var i=numPreCond;
+  								var selectCond='';
+  								var inputCond="";
+  								var precond="";
+  								var primo=true;
+  								while(i>0){
+  									var ind=$("PreCondSelect_"+i).selectedIndex;
+  			                    	selectCond=$("PreCondSelect_"+i)[ind].value;
+  			                    	if($("PreCondInput_"+i))
+  			                    		inputCond=$("PreCondInput_"+i).value;
+  			                    	var strTmp='';
+  									if(primo==true) //first time in while
+  										strTmp="python: "+selectCond;
+  									else
+  										strTmp="; python: "+selectCond;
+  										
+  									if(selectCond=="isAnonymous" || selectCond=="isAuthenticated"){
+  										precond+=strTmp+"(context)";
+  										primo=false;
+  									}
+  									else if(selectCond=="hasRole"){
+  										 if(inputCond.trim()!=""){
+  											precond+=strTmp+"(context, request, '"+inputCond+"')";
+  										 	primo=false;
+  										 }
+  									}
+  									else{ //isCreated || isNotCreated
+  										if(inputCond.trim()!=""){
+  											precond+=strTmp+"(context, '"+inputCond+"')";
+  											primo=false;
+  										}
+  									}		
+  										
+  									
+  									i--;	
+  								}
+  								paramsObj['validators']=precond;
+  							
+  							}
 							  
 							if($("Sandbox").checked==true && $("SandboxBase").value.trim()!=""){  //if sandbox checked && exists sandbox base url
 								  paramsObj['SandboxBase']=$("SandboxBase").value.trim();
@@ -1265,6 +1320,48 @@ windmill.ui.remote = new function() {
         								  
         									  if($("Sandbox").checked==true && $("SandboxBase").value.trim()!="")  //if sandbox checked && exists sandbox base url
         										  paramsObj['SandboxBase']=$("SandboxBase").value.trim();
+        									  
+        										//pre-conditions
+        			  							var numPreCond=parseInt($("NumPreCond").value);
+        			  							if(numPreCond!=0){
+        			  								var i=numPreCond;
+        			  								var selectCond='';
+        			  								var inputCond="";
+        			  								var precond="";
+        			  								var primo=true;
+        			  								while(i>0){
+        			  									var ind=$("PreCondSelect_"+i).selectedIndex;
+        			  			                    	selectCond=$("PreCondSelect_"+i)[ind].value;
+        			  			                    	if($("PreCondInput_"+i))
+        			  			                    		inputCond=$("PreCondInput_"+i).value;
+        			  			                    	var strTmp='';
+        			  									if(primo==true) //first time in while
+        			  										strTmp="python: "+selectCond;
+        			  									else
+        			  										strTmp="; python: "+selectCond;
+        			  										
+        			  									if(selectCond=="isAnonymous" || selectCond=="isAuthenticated"){
+        			  										precond+=strTmp+"(context)";
+        			  										primo=false;
+        			  									}
+        			  									else if(selectCond=="hasRole"){
+        			  										 if(inputCond.trim()!=""){
+        			  											precond+=strTmp+"(context, request, '"+inputCond+"')";
+        			  											primo=false;
+        			  										 }
+        			  									}
+        			  									else{ //isCreated || isNotCreated
+        			  										if(inputCond.trim()!=""){
+        			  											precond+=strTmp+"(context, '"+inputCond+"')";
+        			  											primo=false;
+        			  										}
+        			  									}		
+        			  									
+        			  									i--;	
+        			  								}
+        			  								paramsObj['validators']=precond;
+        			  							
+        			  							}
         								  }
         								  
         								  if($("Sandbox").checked==true && $("SandboxBase").value.trim()!=""){
@@ -1362,6 +1459,16 @@ windmill.ui.remote = new function() {
         	$("PloneSiteUrl").value=''; //reset starting url
         	if($("Sandbox").checked==true)
         		$("Sandbox").click();
+          	if(parseInt($("NumPreCond").value)<=2){
+          		$('space').style.height=parseInt($('space').style.height.replace('px',""))-(parseInt($("NumPreCond").value)*40)+"px";
+          		document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))+(parseInt($("NumPreCond").value)*40)+"px";
+          	}
+          	else{
+          		$('space').style.height=parseInt($('space').style.height.replace('px',""))-80+"px";
+          		document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))+80+"px";
+          	}
+          	$("PreConds").innerHTML="<input id=\"NumPreCond\" type=\"hidden\" value=\"0\" /><span id=\"PreCondSpan\"><strong>&nbsp;Pre-conditions: </strong><img title=\"Add Pre-condition\" name='plusPreCond' id=\"plusPreCond\" border=\"no\" src=\"img/plus.png\"  style=\"width:37px;height:29px;cursor:pointer;position:relative;top:10px;\" onclick=\"windmill.ui.remote.addPreCondition()\"/></span>";	
+        	
         	d = function() {
                 $('ideForm').innerHTML = '';
                 fleegix.fx.fadeIn($('ideForm'));
@@ -1985,6 +2092,127 @@ windmill.ui.remote = new function() {
     	 else if($(id+'CustConditions')){
     		 $(id+'Conditions').removeChild($(id+'CustConditions'));
     		 
+    	 }
+    	 
+     };
+    
+     
+     //Add new pre-condition fields when you press plus button
+     this.addPreCondition=function(){
+    	 
+    	 $("NumPreCond").value=parseInt($("NumPreCond").value)+1;
+    	 var span=document.createElement('span');
+		 span.id='PreCondSpan_'+$("NumPreCond").value;
+		 span.innerHTML="<br/>";
+		 span.style.position="relative";
+		 span.style.left="100px";
+		 var space=document.createElement('span');
+		 space.innerHTML=" ";
+		 var space2=document.createElement('span');
+		 space2.innerHTML=" ";
+		 var preCondInput=document.createElement('input');
+		 preCondInput.id="PreCondInput_"+$("NumPreCond").value;
+		 var imgMinus=document.createElement('img');
+		 imgMinus.title="Delete Pre-condition";
+		 imgMinus.src="img/minus.png";
+		 imgMinus.border="no";
+		 imgMinus.style.width="37px";
+		 imgMinus.style.height="29px";
+		 imgMinus.style.cursor="pointer";
+		 imgMinus.style.position="relative";
+		 imgMinus.style.top="10px";
+		 imgMinus.id="minusPreCond_"+$("NumPreCond").value;
+		 var num=""+$("NumPreCond").value;
+		 imgMinus.onclick=function(){windmill.ui.remote.deletePreCondition(num);};
+		 var combo_box = document.createElement('select');
+		 combo_box.onchange=function(){windmill.ui.remote.changePreCond(num);};
+		 combo_box.id="PreCondSelect_"+$("NumPreCond").value;
+		 combo_box.name = 'PreCondSelect_'+$("NumPreCond").value;
+		 var choice = document.createElement('option');
+		 choice.value = 'isNotCreated';
+		 choice.appendChild(document.createTextNode('isNotCreated'));
+		 combo_box.appendChild(choice);
+		 choice = document.createElement('option');
+		 choice.value = 'isCreated';
+		 choice.appendChild(document.createTextNode('isCreated'));
+		 combo_box.appendChild(choice);
+		 choice = document.createElement('option');
+		 choice.value = 'hasRole';
+		 choice.appendChild(document.createTextNode('hasRole'));
+		 combo_box.appendChild(choice);
+		 choice = document.createElement('option');
+		 choice.value = 'isAuthenticated';
+		 choice.appendChild(document.createTextNode('isAuthenticated'));
+		 combo_box.appendChild(choice);
+		 choice = document.createElement('option');
+		 choice.value = 'isAnonymous';
+		 choice.appendChild(document.createTextNode('isAnonymous'));
+		 combo_box.appendChild(choice);
+		 span.appendChild(combo_box);
+		 span.appendChild(space);
+     	 span.appendChild(preCondInput);
+     	 span.appendChild(space2);
+     	 span.appendChild(imgMinus);
+     	 $('PreConds').appendChild(span);
+     	 if($("NumPreCond").value<=2){
+     		 $('space').style.height=parseInt($('space').style.height.replace('px',""))+40+"px";
+     		 document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))-40 + "px";
+     	 }
+ 
+    	 
+     };
+     
+     
+     this.changePreCond=function(num){
+    	 
+    	 var ind=$("PreCondSelect_"+num).selectedIndex;
+       	 var selectCond=$("PreCondSelect_"+num)[ind].value;
+    	 if(selectCond=="isAnonymous" || selectCond=="isAuthenticated"){
+    		 if($("PreCondInput_"+num))
+    			 $('PreCondSpan_'+num).removeChild($("PreCondInput_"+num));
+    	 }
+		 else if(!$("PreCondInput_"+num)){
+    	 		var preCondInput=document.createElement('input');
+    	 		preCondInput.id="PreCondInput_"+num;
+    	 		$('PreCondSpan_'+num).insertBefore(preCondInput,$('minusPreCond_'+num))
+		 }
+     }; 
+     
+     
+     //Delete pre-condition fields when you press minus button
+    this.deletePreCondition=function(num){
+    	
+    	 $('PreConds').removeChild($('PreCondSpan_'+num));
+    	 if($("NumPreCond").value<=2){
+    		 $('space').style.height=parseInt($('space').style.height.replace('px',""))-40+"px";
+    	 	 document.getElementById('ideForm').style.height = parseInt(document.getElementById('ideForm').style.height.replace('px',""))+40 + "px";	
+    	 }
+    	 $("NumPreCond").value=$("NumPreCond").value-1;
+    	 var numPreCond=$("NumPreCond").value;
+    	 var i=1;
+    	 var j=1;
+    	 while($("PreConds").hasChildNodes()){
+    		 
+    		 if($("PreConds").childNodes[i]==undefined)
+    			 break;
+    		 if($("PreConds").childNodes[i].id==undefined || $("PreConds").childNodes[i].id.indexOf("PreCondSpan_")==-1){
+    			 i++;
+    			 continue;
+    		 }
+    		 var oldNum=parseInt($("PreConds").childNodes[i].id.replace("PreCondSpan_",""));
+    		 if(j!=oldNum){
+    			 $("PreConds").childNodes[i].id='PreCondSpan_'+j;
+    			 var n=""+j;
+    			 $("minusPreCond_"+oldNum).onclick=function(){windmill.ui.remote.deletePreCondition(n);};
+    			 $("minusPreCond_"+oldNum).id="minusPreCond_"+j;
+    			 if($("PreCondInput_"+oldNum))
+    				 $("PreCondInput_"+oldNum).id="PreCondInput_"+j;
+    			 $("PreCondSelect_"+oldNum).onchange=function(){windmill.ui.remote.changePreCond(n);};
+    			 $("PreCondSelect_"+oldNum).id="PreCondSelect_"+j;
+    		 }
+    		 j++;
+    		 i++;
+    		
     	 }
     	 
      };
