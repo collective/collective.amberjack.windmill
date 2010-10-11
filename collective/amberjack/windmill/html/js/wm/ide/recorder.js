@@ -200,7 +200,7 @@ windmill.ui.recorder = new function() {
                 windmill.ui.remote.addAction(windmill.ui.remote.buildAction('doubleClick', params));
             }*/
         		
-        		if (e.target.type == "checkbox"){
+        		if (e.target.type == "checkbox"){      			
         			windmill.ui.remote.addAction(windmill.ui.remote.buildAction('check', params));
         		}
         		else{
@@ -285,6 +285,14 @@ windmill.ui.recorder = new function() {
         var params = {};
         if(e.target.type == 'radio'){
         	params['value'] = e.target.value;
+        	
+ 			//make radio value relative
+			if(($("PloneSiteUrl").value.trim()!='') && (params['value'].indexOf($("PloneSiteUrl").value.trim())==0) && ($("Sandbox").checked==false)) 
+				params['value']=params['value'].replace($("PloneSiteUrl").value.trim(),'');
+			  else
+				if(($("Sandbox").checked==true) && ($("SandboxBase").value.trim()!="") && (params['value'].indexOf($("SandboxBase").value.trim())==0))
+					params['value']=params['value'].replace($("SandboxBase").value.trim(),'');
+					
         	windmill.ui.remote.addAction(windmill.ui.remote.buildAction('radio', params));
         	return;
         	}

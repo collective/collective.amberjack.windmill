@@ -265,7 +265,15 @@ windmill.ui.playback = new function() {
                           if (windmill.registry.methods[actionObj.method].locator) {
                         	 var si = $(suites[i].childNodes[j].id + 'locatorType').selectedIndex;
                               paramsObj[$(suites[i].childNodes[j].id + 'locatorType')[si].value] = $(suites[i].childNodes[j].id + 'locator').value;
-
+                              
+                              //make radio method value absolute
+                              if(actionObj.method=='radio' && $(suites[i].childNodes[j].id + 'locatorType')[si].value=='value'){
+                            	  if(($("PloneSiteUrl").value.trim()!='') && ($("Sandbox").checked==false))
+                            	  	paramsObj[$(suites[i].childNodes[j].id + 'locatorType')[si].value]=$("PloneSiteUrl").value.trim()+(paramsObj[$(suites[i].childNodes[j].id + 'locatorType')[si].value]);
+                            	  else
+                            		  if(($("Sandbox").checked==true) && ($("SandboxBase").value.trim()!=""))
+                            			  paramsObj[$(suites[i].childNodes[j].id + 'locatorType')[si].value]=$("SandboxBase").value.trim()+(paramsObj[$(suites[i].childNodes[j].id + 'locatorType')[si].value]);
+                              }
                           }
                           if(actionObj.method=='editorSelect') {
                       		paramsObj['bookmark']=$(suites[i].childNodes[j].id + 'bookmark').value;
