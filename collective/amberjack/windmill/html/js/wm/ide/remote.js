@@ -818,45 +818,49 @@ windmill.ui.remote = new function() {
     
     //Update all the required DOM to rename the step
     this.updateSuite = function(suiteName){
-      var newSN = prompt("New Step Name?",suiteName);
-      if ((!newSN) || (newSN == "") || jQuery('#'+newSN)[0]){
+      var newSN = prompt("New Step Name?",$(suiteName+'allStepName').innerHTML.trim());
+      if ((!newSN) || (newSN == "")){
         return;
       }
-
-      //make sure it's a legit step's name
+    
       newSN=newSN.trim();
-      newSN = newSN.replace(/ /g, "_");
-      newSN = newSN.replace(/\./g, "_");
-      newSN=newSN.replace(/\:/g,"_");
-      newSN=newSN.replace(/,/g,"_");
-      var l=newSN.length;
+      var visibleSN=newSN; //name step
+      newSN=newSN.replace(/[^a-zA-Z0-9_-]/g,'__'); //step's id
+      if(jQuery('#'+newSN)[0])
+    	  return;
+      /*var l=newSN.length;
       var temp=newSN.substr(0);
       for (i=1; i<l; i++){
     	if(newSN[i-1]=='_' && newSN[i]=='_')
     		 	temp=temp.substr(0,i-1)+temp.substr(i);
       }
-      newSN = temp.substr(0);
+      newSN = temp.substr(0);*/
       var oldSuite = $(suiteName);  
       var olddesc=tinyMCE.get(suiteName+'descStep').getContent();
-      var cut=0;
       var oldUrl=$(oldSuite.id+'Url').value;
       var newSuiteNameCrop='';
-      if (newSN.length > 18){
-          newSuiteNameCrop = newSN.substr(0, 18) + "...";
-          cut=1;
-        }
-      else if(oldSuite.id.length > 18){
-    	  newSuiteNameCrop = newSN;
-    	  cut=1;
-      }
+      if (visibleSN.length > 18)
+          newSuiteNameCrop = visibleSN.substr(0, 18) + "...";
+      else 
+    	  newSuiteNameCrop = visibleSN;
       tinyMCE.execCommand('mceRemoveControl', false, suiteName+'descStep');
       oldSuite.id = newSN;
+      
       //change all of the old step names
-      var re = new RegExp(suiteName, "g"); 
+      var re1=new RegExp("('"+suiteName+"Url','"+suiteName+"')","g");
+      var re2=new RegExp("('"+suiteName+"')","g");
+      var re3= new RegExp('title="'+suiteName, "g"); 
+      var re4= new RegExp('="'+suiteName, "g");
+      var re5=new RegExp("(null,'"+suiteName+"')","g");
       var header = jQuery("#"+oldSuite.id+" > .suiteHeader"); //access to the element of suiteHeader class, children of the element with old suite id
-      jQuery(header).html(header.html().replace(re, newSN));
-      if(cut==1) //if the suite name is too long
-    	  $(oldSuite.id+'Title').innerHTML=newSuiteNameCrop;
+      jQuery(header).html(header.html().replace(re1,"'"+newSN+"Url','"+newSN+"'"));
+      jQuery(header).html(header.html().replace(re2,"'"+newSN+"'"));
+      jQuery(header).html(header.html().replace(re3,'title="'+visibleSN));
+      jQuery(header).html(header.html().replace(re4,'="'+newSN));
+      jQuery(header).html(header.html().replace(re5,"null,'"+newSN+"'"));
+
+      $(oldSuite.id+'Title').innerHTML=newSuiteNameCrop;
+      $(oldSuite.id+'allStepName').innerHTML=visibleSN;
       
       $(oldSuite.id+'Url').value=oldUrl; //restore url of the renamed suite
       tinyMCE.execCommand('mceAddControl', false, newSN+'descStep');
@@ -882,9 +886,12 @@ windmill.ui.remote = new function() {
         if (newFlag){
         	if(suiteN==null){ //if name step == null--> default name
         		suiteName = 'recStep' + windmill.ui.recordSuiteNum;
+        		suiteN=suiteName;
             }
         	else{ //otherwise new suite with passed name
-        		 suiteName = suiteN;
+        		 suiteName=suiteN.replace(/[^a-zA-Z0-9_-]/g,'__');
+        	      if(jQuery('#'+suiteName)[0])
+        	    	  return;
         	}
             windmill.ui.currentSuite = suiteName;
            
@@ -898,6 +905,7 @@ windmill.ui.remote = new function() {
           //default to a new one
           else {
         	  suiteName = 'recStep' + windmill.ui.recordSuiteNum;
+        	  suiteN=suiteName;
         	  windmill.ui.currentSuite=suiteName;
           }
         } 
@@ -912,11 +920,12 @@ windmill.ui.remote = new function() {
             suite.id = suiteName;
             var templ = new fleegix.ejs.Template({ node: $('suiteHeaderTemplate') });
             //display some of the name
-            var suiteNameCrop = suiteName;
+            var suiteNameAll=suiteN;
+            var suiteNameCrop = suiteN;
             if (suiteNameCrop.length > 18){
-              suiteNameCrop = suiteName.substr(0, 18) + "..."
+              suiteNameCrop = suiteNameCrop.substr(0, 18) + "..."
             }
-            var suiteHead = templ.process({ data: { suiteName: suiteName, suiteNameCrop: suiteNameCrop} });
+            var suiteHead = templ.process({ data: { suiteName: suiteName, suiteNameCrop: suiteNameCrop, suiteNameAll: suiteNameAll} });
             jQuery(suite).html(suiteHead);
             var primasuite=false;
             if(!($('ideForm').hasChildNodes()))
@@ -1098,7 +1107,7 @@ windmill.ui.remote = new function() {
                     if(j==1){
   							
   							paramsObj['descStep']=tinyMCE.get(suite.id+'descStep').getContent();
-  							paramsObj['titleTut']=id;
+  							paramsObj['titleTut']=$(id+"allStepName").innerHTML.trim();
   							paramsObj['PloneSiteUrl']=$("PloneSiteUrl").value.trim();
   							
   							//pre-conditions
@@ -1154,7 +1163,7 @@ windmill.ui.remote = new function() {
 							else
 								  paramsObj['url']=$(suite.id+'Url').value;
   					}
-                    paramsObj['nameStep']=id;
+                    paramsObj['nameStep']=$(id+"allStepName").innerHTML.trim();
                     paramsObj['description'] = $(suite.childNodes[j].id + 'DescId').value;
                     if($(suite.childNodes[j].id+'ComboCond')){
                     	var ind=$(suite.childNodes[j].id+'ComboCond').selectedIndex;
@@ -1373,7 +1382,7 @@ windmill.ui.remote = new function() {
         								  else
         									  paramsObj['url']=$(suite.id+'Url').value;
         							  }
-        							  paramsObj['nameStep']=name;
+        							  paramsObj['nameStep']=$(suite.id+"allStepName").innerHTML.trim();
         							  paramsObj['description'] = $(suite.childNodes[k].id + 'DescId').value;
         							  if($(suite.childNodes[k].id+'ComboCond')){
         								  var ind=$(suite.childNodes[k].id+'ComboCond').selectedIndex;
