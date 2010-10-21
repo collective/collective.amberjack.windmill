@@ -838,6 +838,7 @@ windmill.ui.remote = new function() {
       var oldSuite = $(suiteName);  
       var olddesc=tinyMCE.get(suiteName+'descStep').getContent();
       var oldUrl=$(oldSuite.id+'Url').value;
+      var oldAllStepName=$(oldSuite.id+'allStepName').innerHTML.trim();
       var newSuiteNameCrop='';
       if (visibleSN.length > 18)
           newSuiteNameCrop = visibleSN.substr(0, 18) + "...";
@@ -849,13 +850,13 @@ windmill.ui.remote = new function() {
       //change all of the old step names
       var re1=new RegExp("('"+suiteName+"Url','"+suiteName+"')","g");
       var re2=new RegExp("('"+suiteName+"')","g");
-      var re3= new RegExp('title="'+suiteName, "g"); 
+      var re3= new RegExp('title="'+oldAllStepName+'"', "g");
       var re4= new RegExp('="'+suiteName, "g");
       var re5=new RegExp("(null,'"+suiteName+"')","g");
       var header = jQuery("#"+oldSuite.id+" > .suiteHeader"); //access to the element of suiteHeader class, children of the element with old suite id
       jQuery(header).html(header.html().replace(re1,"'"+newSN+"Url','"+newSN+"'"));
       jQuery(header).html(header.html().replace(re2,"'"+newSN+"'"));
-      jQuery(header).html(header.html().replace(re3,'title="'+visibleSN));
+      jQuery(header).html(header.html().replace(re3,'title="'+visibleSN+'"'));
       jQuery(header).html(header.html().replace(re4,'="'+newSN));
       jQuery(header).html(header.html().replace(re5,"null,'"+newSN+"'"));
 
@@ -890,8 +891,6 @@ windmill.ui.remote = new function() {
             }
         	else{ //otherwise new suite with passed name
         		 suiteName=suiteN.replace(/[^a-zA-Z0-9_-]/g,'__');
-        	      if(jQuery('#'+suiteName)[0])
-        	    	  return;
         	}
             windmill.ui.currentSuite = suiteName;
            
@@ -920,7 +919,7 @@ windmill.ui.remote = new function() {
             suite.id = suiteName;
             var templ = new fleegix.ejs.Template({ node: $('suiteHeaderTemplate') });
             //display some of the name
-            var suiteNameAll=suiteN;
+            var suiteNameAll=suiteN.trim();
             var suiteNameCrop = suiteN;
             if (suiteNameCrop.length > 18){
               suiteNameCrop = suiteNameCrop.substr(0, 18) + "..."

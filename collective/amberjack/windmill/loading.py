@@ -122,8 +122,8 @@ def load_tutorial(self,suite_name,filename):
             text=None
             condition=None
             if(noMic.has_key(str(j))):
-                filecfg+='\tclient.highlight(nameStep=u\''+noMic[str(j)].split('_',1)[-1]+'\', url='+repr(urlStep[str(h)])+', descStep='+repr(descStep[str(h)])+', locators=u\'\', description=u\'\')\n'
-                oldNamestep=noMic[str(j)].split('_',1)[-1]
+                filecfg+='\tclient.highlight(nameStep=u\''+config.get(noMic[str(j)],"title")+'\', url='+repr(urlStep[str(h)])+', descStep='+repr(descStep[str(h)])+', locators=u\'\', description=u\'\')\n'
+                oldNamestep=config.get(noMic[str(j)],"title")
                 h+=1
                 continue
             try:
@@ -168,19 +168,19 @@ def load_tutorial(self,suite_name,filename):
                 pass
             
             if k==0:
-                    if(stepNameMic[microstep[str(j)]].split('_',1)[-1]==oldNamestep):
-                        filecfg+="nameStep"+"=u\""+stepNameMic[microstep[str(j)]].split('_',1)[-1]+"\""
+                    if(config.get(stepNameMic[microstep[str(j)]],"title")==oldNamestep):
+                        filecfg+="nameStep"+"=u\""+config.get(stepNameMic[microstep[str(j)]],"title")+"\""
                     else:
-                        filecfg+="nameStep"+"=u\""+stepNameMic[microstep[str(j)]].split('_',1)[-1]+"\""+", descStep=u"+repr(descStep[str(h)])+", url=u"+repr(urlStep[str(h)])
-                        oldNamestep=stepNameMic[microstep[str(j)]].split('_',1)[-1]
+                        filecfg+="nameStep"+"=u\""+config.get(stepNameMic[microstep[str(j)]],"title")+"\""+", descStep=u"+repr(descStep[str(h)])+", url=u"+repr(urlStep[str(h)])
+                        oldNamestep=config.get(stepNameMic[microstep[str(j)]],"title")
                         h+=1
                     k=1
             else:
-                     if(stepNameMic[microstep[str(j)]].split('_',1)[-1]==oldNamestep):
-                        filecfg+=", nameStep"+"=u\""+stepNameMic[microstep[str(j)]].split('_',1)[-1]+"\""
+                     if(config.get(stepNameMic[microstep[str(j)]],"title")==oldNamestep):
+                        filecfg+=", nameStep"+"=u\""+config.get(stepNameMic[microstep[str(j)]],"title")+"\""
                      else:
-                        filecfg+=", nameStep"+"=u\""+stepNameMic[microstep[str(j)]].split('_',1)[-1]+"\""+", descStep=u"+repr(descStep[str(h)])+", url=u"+repr(urlStep[str(h)])
-                        oldNamestep=stepNameMic[microstep[str(j)]].split('_',1)[-1]
+                        filecfg+=", nameStep"+"=u\""+config.get(stepNameMic[microstep[str(j)]],"title")+"\""+", descStep=u"+repr(descStep[str(h)])+", url=u"+repr(urlStep[str(h)])
+                        oldNamestep=config.get(stepNameMic[microstep[str(j)]],"title")
                         h+=1
             if old_style==True :
                     filecfg+=", id=u\""+config.get(microstep[str(j)], "method")+"\""
