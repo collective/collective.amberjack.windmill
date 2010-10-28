@@ -408,8 +408,22 @@ var windmill = new function() {
         //they were before the new page load
         windmill.ui.domexplorer.setExploreState();
         windmill.ui.recorder.setRecState();
-        if(windmill.ui.currentSuite!=null && windmill.ui.recorder.recordState==true) //set the url of the new step if recording state is true
-        	$(windmill.ui.currentSuite+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html",""); 
+        if(windmill.ui.currentSuite!=null && windmill.ui.recorder.recordState==true){ //set the url of the new step if recording state is true
+        	if($("Sandbox").checked==true && (windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,($("SandboxBase").value.trim()).length)!=$("SandboxBase").value.trim())){ //sandbox checked but page's url is outside the base folder	
+        		$(windmill.ui.currentSuite+"Header").style.background = "#e00";
+        		$(windmill.ui.currentSuite+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("PloneSiteUrl").value.trim(),"");
+        	}
+        	else if($("Sandbox").checked==true){
+        		if($("SandboxBase").value.trim()=="")
+        			$("SandboxBase").value=$("PloneSiteUrl").value.trim();
+        		$(windmill.ui.currentSuite+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("SandboxBase").value.trim(),"");
+        	}
+        	else
+        		$(windmill.ui.currentSuite+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("PloneSiteUrl").value.trim(),"");
+    		
+    		if($(windmill.ui.currentSuite+'Url').value.trim()=='')
+    			$(windmill.ui.currentSuite+'Url').value='/';
+        }
         else if(windmill.ui.recorder.recordState==false)  //i moved in another page with recorder turned off
         	  windmill.ui.recorder.primaPag=true;
         

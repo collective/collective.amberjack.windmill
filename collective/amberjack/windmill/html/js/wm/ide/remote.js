@@ -932,8 +932,12 @@ windmill.ui.remote = new function() {
             //Append the new step to the IDE
             $('ideForm').appendChild(suite);
             if(load==false){ //if you are not loading a tutorial get the step's url from the page
-        		if($("PloneSiteUrl").value=="" || $("PloneSiteUrl").value.trim()=='')
-        			$("PloneSiteUrl").value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,(windmill.testWin().location.href.replace("/windmill-serv/start.html","").length)-1);
+        		if($("PloneSiteUrl").value=="" || $("PloneSiteUrl").value.trim()==''){
+        			$("PloneSiteUrl").value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,(windmill.testWin().location.href.replace("/windmill-serv/start.html","").length));
+        			var lunghezzaUrl=$("PloneSiteUrl").value.trim().length-1;
+        			if($("PloneSiteUrl").value.trim().charAt(lunghezzaUrl)=='/')
+        				$("PloneSiteUrl").value=$("PloneSiteUrl").value.trim().substring(0,lunghezzaUrl-1);
+        		}
             	
         		if($("Sandbox").checked==true && (windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,($("SandboxBase").value.trim()).length)!=$("SandboxBase").value.trim())){ //sandbox checked but page's url is outside the base folder	
             		$(suite.id+"Header").style.background = "#e00";
@@ -946,6 +950,9 @@ windmill.ui.remote = new function() {
             	}
             	else
             		$(suite.id+'Url').value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").replace($("PloneSiteUrl").value.trim(),"");
+        		
+        		if($(suite.id+'Url').value.trim()=='')
+        			$(suite.id+'Url').value='/';
             }
             var catchEnter = function(e){
             		if (e.keyCode == 13){
