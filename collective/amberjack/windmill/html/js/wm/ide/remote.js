@@ -936,7 +936,7 @@ windmill.ui.remote = new function() {
         			$("PloneSiteUrl").value=windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,(windmill.testWin().location.href.replace("/windmill-serv/start.html","").length));
         			var lunghezzaUrl=$("PloneSiteUrl").value.trim().length-1;
         			if($("PloneSiteUrl").value.trim().charAt(lunghezzaUrl)=='/')
-        				$("PloneSiteUrl").value=$("PloneSiteUrl").value.trim().substring(0,lunghezzaUrl-1);
+        				$("PloneSiteUrl").value=$("PloneSiteUrl").value.trim().substring(0,lunghezzaUrl);
         		}
             	
         		if($("Sandbox").checked==true && (windmill.testWin().location.href.replace("/windmill-serv/start.html","").substring(0,($("SandboxBase").value.trim()).length)!=$("SandboxBase").value.trim())){ //sandbox checked but page's url is outside the base folder	
