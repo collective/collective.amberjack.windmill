@@ -170,21 +170,21 @@ class Converter:
                 self.set(microstep_name,'condition',v)
                 continue
             if(k=='locators'):  #highlight method
-               if (v==''):
+               if (v.strip()==''):
                         continue
                allLoc=v.split(',')
                lung=len(allLoc)
                cont=1
                for l in allLoc:
                    loctype=(l.split(':')[0]+'').strip()
-                   selector+='"'+(l.split(':',1)[1]).strip()+'" : '+"'"+loctype+"'"
+                   selector+="'"+loctype+"' : "+'"'+(l.split(':',1)[1]).strip()+'"'
                    if cont==lung:
                        break
                    else:
                        selector+=', '
                        cont+=1
             elif(k=='id' or k=='link' or k=='value' or k=='xpath' or k=='jsid' or k=='name' or k=='classname' or k=='tagname' or k=='label' or k=='jquery'):
-                selector+='"'+v+'" : '+"'"+k+"'"
+                selector+="'"+k+"' : "+'"'+v+'"'
             else:
                  if(primo==True):
                             if(k=='bookmark'):

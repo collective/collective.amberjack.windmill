@@ -1183,7 +1183,7 @@ windmill.ui.remote = new function() {
                     				var operator=$(suite.childNodes[j].id+'ComboCond2')[ind2].value;
                     				if(actionObj.method!='highlight'){
                     					if(type!='')
-                    						paramsObj['condition']='{"selector":{"'+idSel+'":"'+type+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
+                    						paramsObj['condition']='{"selector":{"'+type+'":"'+idSel+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
                     				}
                     				else{ //highlight method
                     					if(idSel.trim()!=''){
@@ -1193,7 +1193,7 @@ windmill.ui.remote = new function() {
                     							if(selector!='')
                     								selector+=',';
                     							var k=arr[i].split(':');
-                    							selector+='"'+k[1].trim()+'":"'+k[0].trim()+'"';
+                    							selector+='"'+k[0].trim()+'":"'+k[1].trim()+'"';
                     						}
                     						paramsObj['condition']='{"selector":{'+selector+'},"operator":"'+operator+'","value":"'+inputValue+'"}';
                     					}
@@ -1402,7 +1402,7 @@ windmill.ui.remote = new function() {
         											  var operator=$(suite.childNodes[k].id+'ComboCond2')[ind2].value;
         											  if(actionObj.method!='highlight'){
         												  if(type!='')
-        													  paramsObj['condition']='{"selector":{"'+idSel+'":"'+type+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
+        													  paramsObj['condition']='{"selector":{"'+type+'":"'+idSel+'"},"operator":"'+operator+'","value":"'+inputValue+'"}';
         											  }
         											  else{ //highlight method
         												  if(idSel.trim()!=''){
@@ -1412,7 +1412,7 @@ windmill.ui.remote = new function() {
         														  if(selector!='')
         															  selector+=',';
         														  var k=arr[i].split(':');
-        														  selector+='"'+k[1].trim()+'":"'+k[0].trim()+'"';
+        														  selector+='"'+k[0].trim()+'":"'+k[1].trim()+'"';
         													  }
         													  paramsObj['condition']='{"selector":{'+selector+'},"operator":"'+operator+'","value":"'+inputValue+'"}';
         												  }

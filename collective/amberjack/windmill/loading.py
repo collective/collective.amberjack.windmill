@@ -155,7 +155,20 @@ def load_tutorial(self,suite_name,filename):
             
                 
             try:
-                selector = eval(config.get(microstep[str(j)], "selector"))
+                strSel=config.get(microstep[str(j)], "selector");
+                arrSel=(strSel).split(',')
+                if (len(arrSel)==1):
+                    selector = eval(arrSel[0])
+                else:   #highlight method
+                    arrSel=((strSel).strip()[1:len(strSel)-1]).split(',')
+                    tempSelector='{';
+                    for i in range(len(arrSel)):
+                        if i!=0:
+                            tempSelector+=', '
+                        varTmp=arrSel[i].split(':',1)
+                        tempSelector+=varTmp[1].strip()+" : "+varTmp[0].strip()
+                    tempSelector+='}'
+                    selector=eval(tempSelector)    
             except:
                 pass
             try:
@@ -205,7 +218,7 @@ def load_tutorial(self,suite_name,filename):
                      filecfg+=', locators=u'+repr(strloc)
                  else:
                      for s,v in selector.items():
-                         filecfg+=', '+v+"=u"+repr(s)
+                         filecfg+=', '+s+"=u"+repr(v)
             if text != None:            
                 for s,v in text.items():
                    filecfg+=', '+s+"=u"+repr(v)    
