@@ -23,7 +23,7 @@ setup(name='collective.amberjack.windmill',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'windmill'
+          'windmill==1.3'
           # -*- Extra requirements: -*-
       ],
       entry_points = {
